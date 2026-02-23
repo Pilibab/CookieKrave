@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "scripts": {
+    "install-all": "concurrently \"cd frontend && npm install\" \"cd backend && pip install -r requirements.txt\"",
+    "dev": ""
+  }
+
+}
