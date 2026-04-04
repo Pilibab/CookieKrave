@@ -1,7 +1,7 @@
 from typing import Any, cast, Generic, TypeVar
 from pydantic import BaseModel
 from supabase.client import Client
-
+from postgrest import APIResponse
 
 # allows base repo polymorphism 
 # bounding allows data model_dump in line 32, 36 without bound data is treated as an object which 
@@ -46,3 +46,19 @@ class BaseRepository(Generic[T]):
     # specific row based on its ID.
     def delete(self, id: str):
         return self.table.delete().eq("id", id).execute().data
+    
+    #existence checker
+    # helper probably move this to its own file 
+    def validate_existence(self, result: APIResponse) -> bool:
+        """
+        Checks the API result for a valid count. 
+        Fails loudly if the count is missing (connection/API error).
+        """
+        # Check for connection/query errors first
+        # worried that since None will occur if the user lost its connection, if 
+        # none returns false it may allow the user to create an account or whatever 
+        # regardless if 2 customer has the same gmail upon reconnecting 
+        if result.count is None:
+            raise RuntimeError("Database failed to return a count. Check connection.")
+        
+        return result.count > 0 
