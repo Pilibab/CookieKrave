@@ -11,5 +11,8 @@ CREATE TABLE BOM (
 
     CONSTRAINT fk_component 
         FOREIGN KEY (inventory_id) 
-        REFERENCES INVENTORY (inventory_id)
+        REFERENCES INVENTORY (inventory_id),
+
+CONSTRAINT chk_quantity_required
+CHECK (quantity_required > 0)
 );

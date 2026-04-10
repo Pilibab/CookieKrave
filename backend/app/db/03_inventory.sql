@@ -5,8 +5,8 @@ CREATE TABLE INVENTORY (
     unit_of_measure VARCHAR(10) NOT NULL,               -- 'g', 'ml', 'pcs', etc.
     reorder_trigger DECIMAL(10,2) NOT NULL DEFAULT 0,   -- reorder when the amt is met
 
-CONSTRAINT chk_CURRENT_STOCK
-CHECK (CURRENT_STOCK >= 0),
-CONSTRAINT chk_REORDER_TRIGGER
-CHECK (REORDER_TRIGGER >= 0)
+CONSTRAINT chk_current_stock
+CHECK (current_stock >= 0),
+CONSTRAINT chk_reorder_trigger
+CHECK (reorder_trigger >= 0)
 );
