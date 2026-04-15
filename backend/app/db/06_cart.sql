@@ -1,12 +1,11 @@
 CREATE TABLE CART (
-    order_id int NOT NULL,
-    product_id int NOT NULL,
-    quantity int DEFAULT 1,
-    price_per_item DECIMAL (7, 2) NOT NULL,
+    ORD_ID int NOT NULL,
+    PROD_ID int NOT NULL,
+    CART_QUAN int DEFAULT 1,
     CONSTRAINT FK_order_id
-        FOREIGN KEY (order_id) 
-        REFERENCES ORDERS(order_id),
+        FOREIGN KEY (ORD_ID) 
+        REFERENCES ORDERS(ORD_ID),
     CONSTRAINT FK_product_id
-        FOREIGN KEY (product_id) 
-        REFERENCES PRODUCTS(product_id),
+        FOREIGN KEY (PROD_ID) 
+        REFERENCES PRODUCTS(PROD_ID),
 );

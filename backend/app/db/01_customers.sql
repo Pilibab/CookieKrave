@@ -1,9 +1,10 @@
 CREATE TABLE CUSTOMERS (
-    customer_id SERIAL PRIMARY KEY, 
-    full_name VARCHAR(255), 
-    email VARCHAR(255) UNIQUE NOT NULL,
-    social_provider VARCHAR(50), -- 'google' | 'facebook'
-    social_id VARCHAR(255) UNIQUE, -- from sign-on
-    contact_number VARCHAR(20) NOT NULL, -- dont use int or decimal for number 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    CUST_ID SERIAL PRIMARY KEY, 
+    CUST_LASTNAME VARCHAR(50) NOT NULL, 
+    CUST_MIDDLENAME VARCHAR(50), 
+    CUST_EMAIL VARCHAR(255) UNIQUE NOT NULL,
+    CUST_SOCIAL_PROVIDER VARCHAR(50), -- 'google' | 'facebook'
+    CUST_SOCIALID VARCHAR(255) UNIQUE, -- from sign-on
+    CUST_NO VARCHAR(20) NOT NULL, -- dont use int or decimal for number 
+    CUST_CD TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- THIS IS CREATE DATE 
 );
