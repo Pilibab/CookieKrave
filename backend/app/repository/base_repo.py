@@ -1,4 +1,4 @@
-from typing import Any, cast, Generic, TypeVar
+from typing import Any, cast, Generic, TypeVar, Optional
 from pydantic import BaseModel
 from supabase.client import Client
 from postgrest import APIResponse
@@ -27,7 +27,7 @@ class BaseRepository(Generic[T]):
         return self.table.select("*").execute().data
 
     # It uses the Primary Key (the ID) to grab one specific record.
-    def get_by_id(self, id: str):
+    def get_by_id(self, id: str | int) -> Optional[T]:
         data = self.table.select("*").eq(self.pk_field , id).execute().data
 
         if (data != []): 

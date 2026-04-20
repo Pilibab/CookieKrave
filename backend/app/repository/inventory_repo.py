@@ -6,7 +6,7 @@ from model.inventory import Inventory
 class InventoryRepository(BaseRepository[Inventory]):
     def __init__(self, supabase: Client):
         # Pass the actual table name and the model class to the parent
-        super().__init__(supabase, "INVENTORY", Inventory, )
+        super().__init__(supabase, "INVENTORY", Inventory, "INV_ID")
 
     def adjust_stock(self, INV_ID: int, amount: float):
         """
@@ -19,3 +19,5 @@ class InventoryRepository(BaseRepository[Inventory]):
         if current:
             new_stock = float(current.INV_STOCK) + amount
             return self.table.update({"INV_STOCK": new_stock}).eq("INV_ID", INV_ID).execute()
+        
+    # todo: maybe a get low stock method?
