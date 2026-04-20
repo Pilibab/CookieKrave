@@ -11,9 +11,16 @@ T = TypeVar("T", bound=BaseModel)
 
 class BaseRepository(Generic[T]):
     # maybe pass the table itself to shorten this instanciation 
-    def __init__(self, supabase: Client ,table_name: str, model_class: type[T]):
+    def __init__(
+            self, 
+            supabase: Client,
+            table_name: str, 
+            model_class: type[T],
+            pk_field: str = "id"    # for dynamic id in each database
+            ):
         self.table = supabase.table(table_name)
         self.model_class = model_class
+        self.pk_field = pk_field
 
     # get all row for a specific table 
     def get_all(self):
@@ -21,7 +28,7 @@ class BaseRepository(Generic[T]):
 
     # It uses the Primary Key (the ID) to grab one specific record.
     def get_by_id(self, id: str):
-        data = self.table.select("*").eq("id", id).execute().data
+        data = self.table.select("*").eq(self.pk_field , id).execute().data
 
         if (data != []): 
             # !Argument expression after ** must be a mapping with a "str" key type
@@ -40,12 +47,12 @@ class BaseRepository(Generic[T]):
     # for new ones provided in your Model.
     def update(self, id: str, data: T):
         clean_data = data.model_dump()
-        return self.table.update(clean_data).eq("id", id).execute().data
+        return self.table.update(clean_data).eq(self.pk_field , id).execute().data
 
     # It instructs the database to permanently erase a 
     # specific row based on its ID.
     def delete(self, id: str):
-        return self.table.delete().eq("id", id).execute().data
+        return self.table.delete().eq(self.pk_field , id).execute().data
     
     #existence checker
     # helper probably move this to its own file 
