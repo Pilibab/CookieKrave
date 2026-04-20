@@ -10,14 +10,14 @@ class ProductBase(BaseModel):
     # setting it to true says that if bracket notation dict["key"] does not work try obj.method
     model_config = ConfigDict(from_attributes=True)
 
-class Product(BaseModel): 
-    product_name: str = Field(min_length=5, max_length=64)
-    product_desc: str = Field(min_length=5, max_length=255)
-    price: float                                                # set the float to 7 width 2 decimal place
-    is_available: bool = True
+class Product(ProductBase): 
+    PROD_NAME: str = Field(min_length=5, max_length=64)
+    PROD_DESC: str = Field(min_length=5, max_length=255)
+    PROD_PRICE: float                                                # set the float to 7 width 2 decimal place
+    PROD_AVAILABLE: bool = True
 
 
-class ProductCreate(ProductBase):
+class ProductCreate(BaseModel):
     """
         Used when receiving data from the Frontend (ID isn't created yet) 
     """
