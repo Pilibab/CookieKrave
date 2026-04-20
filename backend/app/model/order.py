@@ -6,7 +6,7 @@ class OrderBase(BaseModel):
         used for reading data from the data base
     """
     order_id: int
-    customer_id: int
+    CUST_ID: int
 
     # This allows Pydantic to work with SQLAlchemy/SQLModel objects
     model_config = ConfigDict(from_attributes=True)

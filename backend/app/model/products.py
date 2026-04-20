@@ -4,7 +4,7 @@ class ProductBase(BaseModel):
     """
         used for reading data from the data base
     """
-    product_id: int 
+    PROD_ID: int 
 
     # allows pydantic to work with sql, pydantic expects a dict but sql returns an object 
     # setting it to true says that if bracket notation dict["key"] does not work try obj.method
