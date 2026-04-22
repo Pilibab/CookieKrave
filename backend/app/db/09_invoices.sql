@@ -6,5 +6,5 @@ CREATE TABLE INVOICES (
     INVOICE_DETS VARCHAR(255),                          -- should be its own class ig, INVOICE DETAIL
     CONSTRAINT FK_order_id 
         FOREIGN KEY (ORD_ID) 
-        REFERENCES ORDERS(ORD_ID),
+        REFERENCES ORDERS(ORD_ID)
 );

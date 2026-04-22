@@ -5,17 +5,17 @@ class OrderBase(BaseModel):
     """
         used for reading data from the data base
     """
-    order_id: int
-    customer_id: int
+    ORD_ID: int
+    CUST_ID: int
 
     # This allows Pydantic to work with SQLAlchemy/SQLModel objects
     model_config = ConfigDict(from_attributes=True)
 
 class Order(OrderBase):
-    order_time: datetime
+    ORD_TIME: datetime
     total_amount: float
-    payment_method: str = Field(min_length=5, max_length=64)
-    fullfillment_method: str = Field(min_length=5, max_length=64)
+    ORD_PAY_METH: str = Field(min_length=5, max_length=64)
+    ORD_F_TYPE: str = Field(min_length=5, max_length=64)
 
 
 class OrderCreate(OrderBase):

@@ -6,7 +6,7 @@ class InvoiceBase(BaseModel):
         used for reading data from the data base
     """
     Invoice_id: int
-    order_id: int
+    ORD_ID: int
 
     # This allows Pydantic to work with SQLAlchemy/SQLModel objects
     model_config = ConfigDict(from_attributes=True)
