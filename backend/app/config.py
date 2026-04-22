@@ -4,7 +4,7 @@ from pydantic import Field, SecretStr
 class AppConfig(BaseSettings):
     # ? why tf fo i need default=none here???
     SUPABASE_KEY: SecretStr = Field(alias="SUPABASE_KEY")
-    SUPABASE_URL: str = Field(alias="SUPABASE_URL")
+    SUPABASE_URL: SecretStr = Field(alias="SUPABASE_URL")
     
     # change this this is just a template 
     # backend_url: str = Field(default="http://localhost:5000", alias="BACKEND_URL")
