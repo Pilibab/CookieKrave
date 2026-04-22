@@ -7,7 +7,7 @@ CREATE TABLE BOM (
     -- Define the Foreign Key constraints
     CONSTRAINT fk_product 
         FOREIGN KEY (PROD_ID) 
-        REFERENCES PRODUCT(PROD_ID),
+        REFERENCES PRODUCTS(PROD_ID),
 
     CONSTRAINT fk_component 
         FOREIGN KEY (INV_ID) 
