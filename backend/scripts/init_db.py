@@ -8,7 +8,7 @@ from psycopg2.extensions import connection as Connection
 from psycopg2.extensions import cursor as Cursor
 # Update these with your Supabase Connection String 
 # Found in: Project Settings > Database > Connection string > URI
-DB_URI = configs.SUPABASE_URL.get_secret_value()
+DB_URI = configs.DIRECT_URL.get_secret_value()
 
 def run_sql_initialization():
     # Path to your SQL files
