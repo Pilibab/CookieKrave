@@ -1,20 +1,17 @@
-from pydantic import BaseModel, ConfigDict
-
+from pydantic import BaseModel, ConfigDict, Field
 
 class BomBase(BaseModel):
-    """
-        used for reading data from the data base
-    """
-    BOM_ID: int
+    """Shared fields: Both the Frontend and DB need these."""
     PROD_ID: int
     INV_ID: int
+    BOM_QUAN_REQ: float = Field(gt=0) # gt=0 matches your SQL CHECK constraint
 
-    # This allows Pydantic to work with SQLAlchemy/SQLModel objects
     model_config = ConfigDict(from_attributes=True)
 
-class Bom(BomBase):
-    BOM_QUAN_REQ: float 
-
 class BomCreate(BomBase):
-    """Used when receiving data from the Frontend (ID isn't created yet)"""
+    """Used for POST requests. Frontend sends PROD_ID, INV_ID, and QUAN."""
     pass
+
+class Bom(BomBase):
+    """Used for GET requests. Adds the DB-generated primary key."""
+    BOM_ID: int
