@@ -2,10 +2,10 @@ from typing import List, cast, Any, Dict
 
 from repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.cart import Cart
+from model.cart import Cart, CartCreate
 
 
-class CartRepository(BaseRepository[Cart]):
+class CartRepository(BaseRepository[Cart, CartCreate]):
 
     def __init__(self, supabase: Client):
         # Pass the actual table name and the model class to the parent

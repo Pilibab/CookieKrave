@@ -2,9 +2,9 @@ from typing import List, cast, Any, Dict
 
 from repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.bom import Bom
+from model.bom import Bom, BomCreate
 
-class BOMRepository(BaseRepository[Bom]):
+class BOMRepository(BaseRepository[Bom, BomCreate]):
     def __init__(self, supabase: Client):
         super().__init__(supabase, "BOM", Bom, "BOM_ID")
 

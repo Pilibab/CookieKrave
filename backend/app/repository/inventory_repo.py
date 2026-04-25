@@ -1,9 +1,9 @@
 from repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.inventory import Inventory
+from model.inventory import Inventory, InventoryCreate
 # from postgrest.types import CountMethod
 
-class InventoryRepository(BaseRepository[Inventory]):
+class InventoryRepository(BaseRepository[Inventory, InventoryCreate]):
     def __init__(self, supabase: Client):
         # Pass the actual table name and the model class to the parent
         super().__init__(supabase, "INVENTORY", Inventory, "INV_ID")

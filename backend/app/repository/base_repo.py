@@ -6,10 +6,11 @@ from postgrest import APIResponse
 # allows base repo polymorphism 
 # bounding allows data model_dump in line 32, 36 without bound data is treated as an object which 
 # doesnt have model_dump method 
-T = TypeVar("T", bound=BaseModel)
+T = TypeVar("T", bound=BaseModel)       # read model
+C = TypeVar("C", bound=BaseModel)       # create model 
 
 
-class BaseRepository(Generic[T]):
+class BaseRepository(Generic[T, C]):
     # maybe pass the table itself to shorten this instanciation 
     def __init__(
             self, 
@@ -39,9 +40,11 @@ class BaseRepository(Generic[T]):
 
     # It takes a Pydantic object, strips it down into a raw Dictionary (via model_dump), 
     # and pushes it into a new row in the database.
-    def create(self, data: T):
+    def create(self, data: C):
         clean_data = data.model_dump()
-        return self.table.insert(clean_data).execute().data
+        result = self.table.insert(clean_data).execute().data
+
+        return self.model_class(**cast(dict[str, Any], result[0]))
 
     # It finds an existing row and swaps out the old values 
     # for new ones provided in your Model.

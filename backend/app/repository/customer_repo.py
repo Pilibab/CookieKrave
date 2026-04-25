@@ -1,9 +1,9 @@
 from repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.customer import Customer
+from model.customer import Customer, CustomerCreate
 from postgrest.types import CountMethod
 
-class CustomerRepository(BaseRepository[Customer]):
+class CustomerRepository(BaseRepository[Customer, CustomerCreate]):
     def __init__(self, supabase: Client):
         # Pass the actual table name and the model class to the parent
         super().__init__(supabase, "CUSTOMERS", Customer, "CUST_ID")

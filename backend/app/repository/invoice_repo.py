@@ -2,10 +2,10 @@ from typing import Optional, cast, Any
 
 from repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.invoice import Invoice
+from model.invoice import Invoice, InvoiceCreate
 
 
-class InvoiceRepository(BaseRepository[Invoice]): 
+class InvoiceRepository(BaseRepository[Invoice, InvoiceCreate]): 
     def __init__(self, supabase: Client):
         super().__init__(supabase, "INVOICES", Invoice, "INVOICE_ID")
 

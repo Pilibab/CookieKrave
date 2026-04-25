@@ -1,10 +1,10 @@
 from repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.order import Order
+from model.order import Order, OrderCreate
 
 from typing import List, cast, Any, Dict
 
-class OrderRepository(BaseRepository[Order]):
+class OrderRepository(BaseRepository[Order, OrderCreate]):
     def __init__(self, supabase: Client):
         # Pass the actual table name and the model class to the parent
         super().__init__(supabase, "ORDERS", Order, "ORD_ID")
