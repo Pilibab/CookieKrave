@@ -3,6 +3,8 @@ from app.repository.orders_repo import OrderRepository
 from app.repository.product_repo import ProductRepository
 from app.repository.cart_repo import CartRepository # Don't forget to import this!
 
+from app.model.order import OrderCreate
+
 class OrderService:
     def __init__(
         self, 
@@ -14,7 +16,9 @@ class OrderService:
         self.prod_repo = prod_repo
         self.cart_repo = cart_repo # Fixed: Now properly assigned
 
-    def get_final_bill(self, order_id: int) -> Dict[str, Any]:
+    # ? wont it be better to fetch also or ensure that the returned query 
+    # ? contains cust_id that way we ensure that the grabbed query is made by the customer
+    def get_final_bill(self, order_id: int, cust_id: int) -> Dict[str, Any]:
         # 1. Fetch data
         order = self.order_repo.get_by_id(order_id)
         
@@ -22,7 +26,7 @@ class OrderService:
         if not order:
             raise ValueError(f"Order with ID {order_id} not found.")
 
-        items = self.cart_repo.get_items_by_order(order_id)
+        items = self.cart_repo.get_items_by_order(order_id, cust_id)
         
         bill_details: List[Dict[str, Any]] = []
         grand_total: float = 0.0
@@ -51,3 +55,26 @@ class OrderService:
             "total": grand_total,
             "items": bill_details
         }
+
+    def create_order(self, order_details: Dict[str, Any]) -> Dict[str, Any]:
+
+        order_to_create = OrderCreate(
+            CUST_ID= order_details["CUST_ID"],
+            TOTAL_AMOUNT=order_details["TOTAL_AMOUNT"],
+            ORD_PAY_METH= order_details["ORD_PAY_METH"],
+            ORD_F_TYPE= order_details["ORD_F_TYPE"],
+        )
+        try:
+            new_order = self.order_repo.create(order_to_create)
+            return {
+                "status": "Success",
+                "order_id": new_order.ORD_ID,
+                "time": new_order.ORD_TIME
+            }
+        except Exception as e:
+            return {
+                "status": "Failed",
+                "error": str(e)
+            }
+
+
