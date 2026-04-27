@@ -57,24 +57,42 @@ class OrderService:
         }
 
     def create_order(self, order_details: Dict[str, Any]) -> Dict[str, Any]:
-
+        """
+            creates order instance and populate cart table 
+            args: { 
+                CUST_ID,
+                TOTAL_AMOUNT,
+                ORD_PAY_METH, 
+                ORD_F_TYPE, 
+                prod_ids: list[int | str]}
+        """
         order_to_create = OrderCreate(
             CUST_ID= order_details["CUST_ID"],
             TOTAL_AMOUNT=order_details["TOTAL_AMOUNT"],
             ORD_PAY_METH= order_details["ORD_PAY_METH"],
-            ORD_F_TYPE= order_details["ORD_F_TYPE"],
+            ORD_F_TYPE= order_details["ORD_F_TYPE"]
         )
+
+        ordered_prod =  order_details["prod_ids"]
+
         try:
+            # create order instance
             new_order = self.order_repo.create(order_to_create)
+
+            # populate cart 
+            self.cart_repo.create_order_line(order_id=new_order.ORD_ID, items=ordered_prod)
+
             return {
                 "status": "Success",
                 "order_id": new_order.ORD_ID,
                 "time": new_order.ORD_TIME
             }
+        
         except Exception as e:
             return {
                 "status": "Failed",
                 "error": str(e)
             }
+
 
 

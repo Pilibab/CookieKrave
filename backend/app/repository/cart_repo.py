@@ -23,3 +23,18 @@ class CartRepository(BaseRepository[Cart, CartCreate]):
         # This ensures we always return a list, even if empty, 
         # which satisfies the List[Cart] type hint.
         return [self.model_class(**item) for item in data]
+    
+    def create_order_line(self, order_id: str | int, items: list[dict[str, int]]):
+        """
+            create order_line / cart from arr of items, quantity and order id
+            args:
+            -   order_id    : well order id 
+            -   items       : items looks like: [{"PROD_ID": 101, "CART_QUAN": 2}, ...]
+        """
+        for item in items:
+            item_instance = CartCreate(
+                ORD_ID=int(order_id),       # i think its better if id is of str
+                PROD_ID=item["PROD_ID"],
+                CART_QUAN=item["CART_QUAN"]
+            )
+            self.create(item_instance)
