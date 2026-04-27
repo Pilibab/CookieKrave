@@ -8,11 +8,9 @@ class BOMRepository(BaseRepository[Bom, BomCreate]):
     def __init__(self, supabase: Client):
         super().__init__(supabase, "BOM", Bom, "BOM_ID")
 
-    def get_recipe_for_product(self, PROD_ID: int) -> List[Bom]:
+    def get_stock(self, PROD_ID: int) -> List[Bom]:
         """Fetches all ingredients and quantities required for a specific product."""
-        response = self.table.select("*").eq("PROD_ID", PROD_ID).execute()
-        data = cast(List[Dict[str, Any]], response.data)
-        return [self.model_class(**item) for item in data]
+        return self.get_where("PROD_ID", PROD_ID)
         
     def get_products_using_ingredient(self, INV_ID: int) -> List[Bom]:
         """Finds all products that use a specific inventory item."""
