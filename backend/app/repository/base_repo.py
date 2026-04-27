@@ -25,10 +25,12 @@ class BaseRepository(Generic[T, C]):
 
     # get all row for a specific table 
     def get_all(self):
+        """retrieve the full table"""
         return self.table.select("*").execute().data
 
     # It uses the Primary Key (the ID) to grab one specific record.
     def get_by_id(self, id: str | int) -> Optional[T]:
+        """get an instance from a table (that is not an associative entity), using only one id"""
         data = self.table.select("*").eq(self.pk_field , id).execute().data
 
         if (data != []): 
@@ -37,6 +39,21 @@ class BaseRepository(Generic[T, C]):
             # the problem is that we cant unpack a dictionary if the key to a field is not str
             # solution: ensure that data is dict[str, any] before unpacking 
             return self.model_class(**cast(dict[str, Any], data[0]))
+
+    # Retrieve all instances matching a specific field and value
+    def get_where(self, field_name: str, value: Any) -> list[T]:
+        """
+        Used for associative entities (e.g., getting all items in a Cart).
+        Returns a list of Pydantic objects.
+        """
+        result = self.table.select("*").eq(field_name, value).execute()
+        
+        # result.data is a list of dictionaries: list[dict[str, Any]]
+        # We map each dictionary in the list to your model_class
+        return [
+            self.model_class(**cast(dict[str, Any], row)) 
+            for row in result.data
+        ]
 
     # It takes a Pydantic object, strips it down into a raw Dictionary (via model_dump), 
     # and pushes it into a new row in the database.
