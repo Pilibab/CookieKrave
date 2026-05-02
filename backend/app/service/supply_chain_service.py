@@ -1,7 +1,7 @@
 # from typing import List
 from app.repository.bom_repo import BOMRepository
 from app.repository.inventory_repo import InventoryRepository
-from app.repository.cart_repo import CartRepository # Don't forget to import this!
+from app.repository.cart_repo import CartRepository 
 
 # from app.model.order import OrderCreate
 

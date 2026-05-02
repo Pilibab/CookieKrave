@@ -26,7 +26,7 @@ class OrderService:
         if not order:
             raise ValueError(f"Order with ID {order_id} not found.")
 
-        items = self.cart_repo.get_items_by_order(order_id, cust_id)
+        items = self.cart_repo.get_items_by_order(order_id)
         
         bill_details: List[Dict[str, Any]] = []
         grand_total: float = 0.0
