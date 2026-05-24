@@ -1,6 +1,6 @@
 from repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.order import Order, OrderCreate
+from app.model.order import Order, OrderCreate
 
 from typing import List, cast, Any, Dict
 

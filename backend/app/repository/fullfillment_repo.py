@@ -1,10 +1,10 @@
 from typing import List, cast, Any, Dict
 
-from repository.base_repo import BaseRepository
+from app.repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.fullfillement import Fulfillment, FulfillmentCreate
-from model.fullfillement import Delivery, DeliveryCreate
-from model.fullfillement import PickUp, PickUpCreate
+from app.model.fullfillement import Fulfillment, FulfillmentCreate
+from app.model.fullfillement import Delivery, DeliveryCreate
+from app.model.fullfillement import PickUp, PickUpCreate
 
 class FulfillmentRepository(BaseRepository[Fulfillment, FulfillmentCreate]):
     def __init__(self, supabase: Client):

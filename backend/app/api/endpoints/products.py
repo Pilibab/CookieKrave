@@ -4,8 +4,8 @@ from typing import List, Optional
 from supabase import Client
 
 
-from model.products import Product, ProductCreate
-from repository.product_repo import ProductRepository
+from app.model.products import Product, ProductCreate
+from app.repository.product_repo import ProductRepository
 from app.db.supabase_client import supabase
 
 def get_supabase():

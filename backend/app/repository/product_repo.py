@@ -1,6 +1,6 @@
-from repository.base_repo import BaseRepository
+from app.repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.products import Product, ProductCreate
+from app.model.products import Product, ProductCreate
 # from postgrest.types import CountMethod
 
 class ProductRepository(BaseRepository[Product, ProductCreate]):

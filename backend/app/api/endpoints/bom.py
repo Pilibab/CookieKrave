@@ -19,7 +19,7 @@ def get_bom_repository(supabase: Client = Depends(get_supabase)) -> BOMRepositor
 # Define the router
 router = APIRouter(
     prefix="/bom",
-    tags=["bom"]
+    tags=["bom"],
 )
 
 @router.post(

@@ -1,8 +1,7 @@
 # backend/app/api/deps.py
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-# from supabase import Client
-from db.supabase_client import supabase  # Reusing your initialized global client
+from app.db.supabase_client import supabase  
 
 # Instantiates the bearer scheme parser
 security = HTTPBearer()
@@ -35,3 +34,13 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials with authentication server."
         )
+
+def require_admin(current_user : dict[str, str | None] = Depends(get_current_user)):
+    """
+        check for admin role... haah we dont have an admin role 
+    """
+    if current_user["role"] != "admin":
+        raise HTTPException(status_code=403)
+    return current_user
+
+

@@ -1,8 +1,9 @@
 # backend/app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.endpoints.customer import router as customer_router
-from api.endpoints.products import router as product_router
+from app.api.endpoints.customer import router as customer_router
+from app.api.endpoints.products import router as product_router
+
 
 app = FastAPI(
     title="CookieKrave API",

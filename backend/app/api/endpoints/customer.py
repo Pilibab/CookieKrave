@@ -3,9 +3,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from supabase import  Client
 from typing import List
 
-from model.customer import Customer, CustomerCreate
-from repository.customer_repo import CustomerRepository
+from app.model.customer import Customer, CustomerCreate
+from app.repository.customer_repo import CustomerRepository
 from app.db.supabase_client import supabase
+from app.api.deps import get_current_user
 
 def get_supabase():
     """Returns the globally initialized supabase client."""
@@ -18,7 +19,8 @@ def get_customer_repository(supabase: Client = Depends(get_supabase)) -> Custome
 # Define the router instead of importing app
 router = APIRouter(
     prefix="/customers",
-    tags=["Customers"]
+    tags=["Customers"],
+    dependencies=[Depends(get_current_user)]
 )
 
 # Change @app to @router, and trim the paths since the prefix handles "/customers"

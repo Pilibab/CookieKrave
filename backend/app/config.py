@@ -1,5 +1,11 @@
+# config.py
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, SecretStr
+from pathlib import Path
+
+# Traces from config.py -> app/ -> backend/ -> CookieKrave/
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
+ENV_PATH = ROOT_DIR / ".env"
 
 class AppConfig(BaseSettings):
     # ? why tf fo i need default=none here???
@@ -13,7 +19,7 @@ class AppConfig(BaseSettings):
     # frontend_url: str = Field(alias="FRONTEND_URL")
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=ENV_PATH,
         extra="ignore", 
         env_ignore_empty=True   # ignore empty env var
         )

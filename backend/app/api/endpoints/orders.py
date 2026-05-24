@@ -4,8 +4,8 @@ from typing import List
 from supabase import Client
 
 
-from model.order import Order, OrderCreate
-from repository.orders_repo import OrderRepository
+from app.model.order import Order, OrderCreate
+from app.repository.orders_repo import OrderRepository
 from app.db.supabase_client import supabase
 
 def get_supabase():

@@ -4,8 +4,8 @@ from typing import List
 from supabase import Client
 
 
-from model.inventory import Inventory, InventoryCreate
-from repository.inventory_repo import InventoryRepository
+from app.model.inventory import Inventory, InventoryCreate
+from app.repository.inventory_repo import InventoryRepository
 from app.db.supabase_client import supabase
 
 def get_supabase():

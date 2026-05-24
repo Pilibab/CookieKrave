@@ -1,8 +1,8 @@
 from typing import List
 
-from repository.base_repo import BaseRepository
+from app.repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.cart import Cart, CartCreate
+from app.model.cart import Cart, CartCreate
 
 
 class CartRepository(BaseRepository[Cart, CartCreate]):

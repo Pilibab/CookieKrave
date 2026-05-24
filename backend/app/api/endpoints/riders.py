@@ -4,8 +4,8 @@ from typing import List
 from supabase import Client
 
 
-from model.rider import Rider, RiderCreate
-from repository.rider_repo import RiderRepository
+from app.model.rider import Rider, RiderCreate
+from app.repository.rider_repo import RiderRepository
 from app.db.supabase_client import supabase
 
 def get_supabase():

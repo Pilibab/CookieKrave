@@ -4,8 +4,8 @@ from typing import List
 from supabase import Client
 
 
-from model.cart import Cart, CartCreate
-from repository.cart_repo import CartRepository
+from app.model.cart import Cart, CartCreate
+from app.repository.cart_repo import CartRepository
 from app.db.supabase_client import supabase
 
 def get_supabase():

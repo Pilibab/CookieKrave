@@ -1,6 +1,6 @@
 from repository.base_repo import BaseRepository
 from supabase.client import Client
-from model.inventory import Inventory, InventoryCreate
+from app.model.inventory import Inventory, InventoryCreate
 # from postgrest.types import CountMethod
 
 class InventoryRepository(BaseRepository[Inventory, InventoryCreate]):
