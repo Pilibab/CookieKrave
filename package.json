@@ -1,11 +1,14 @@
 {
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "dotenv-cli": "^11.0.0"
   },
   "scripts": {
     "install-frontend": "cd frontend && npm install",
     "install-backend": "cd backend && python -m venv venv && ./venv/Scripts/python -m pip install -r requirements.txt",
-    "install-all": "concurrently \"npm install-frontend\" \"npm run install-backend\"",
-    "dev": ""
+    "install-all": "concurrently \"npm run install-frontend\" \"npm run install-backend\"",
+    "dev-backend": "cd backend && .\\venv\\Scripts\\python -m uvicorn app.main:app --reload",
+    "dev-frontend": "cd frontend && npx dotenv -e ../.env next dev",
+    "dev": "concurrently --kill-others -n \"BACKEND,FRONTEND\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run dev-backend\" \"npm run dev-frontend\""
   }
 }
