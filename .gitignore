@@ -143,3 +143,4 @@ vite.config.ts.timestamp-*
 venv
 .vscode
 .next
+*__pycache__
