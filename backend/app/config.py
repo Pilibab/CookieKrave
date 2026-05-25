@@ -14,6 +14,7 @@ class AppConfig(BaseSettings):
     DATABASE_URL: SecretStr = Field(alias="DATABASE_URL")
     SUPABASE_KEY_ADMIN: SecretStr = Field(alias="SUPABASE_KEY_ADMIN")
     DIRECT_URL: SecretStr = Field(alias="DIRECT_URL")
+    SUPABASE_JWT_SECRET: SecretStr = Field(alias="SUPABASE_JWT_SECRET")
     
     # change this this is just a template 
     # backend_url: str = Field(default="http://localhost:5000", alias="BACKEND_URL")

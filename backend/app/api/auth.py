@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from app.api.deps import get_current_user
 from typing import Any
 
-from app.db.supabase_client import supabase 
+from app.db.supabase_client import supabase_admin 
 from typing import Any
 # Define the router instead of importing app
 router = APIRouter(
@@ -18,13 +18,21 @@ def get_authenticated_user(current_user: dict[str, Any] = Depends(get_current_us
     """
     user_id = current_user.get("sub") # Supabase stores the user ID in the 'sub' claim
     
-    # Check if this user exists in your staff/admin table
-    # Adjust this query based on how your 00_staff.sql is structured!
-    response = supabase.table("staff").select("id").eq("auth_id", user_id).execute()
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid token claims: missing 'sub'.")
     
-    # If a record comes back, they are staff. Otherwise, standard customer.
-    is_admin = len(response.data) > 0
-    
+    try: 
+        # Check if this user exists in your staff/admin table
+        # Adjust this query based on how your 00_staff.sql is structured!
+        response = supabase_admin.table("staff").select("id").eq("auth_id", user_id).execute()
+        
+        # If a record comes back, they are staff. Otherwise, standard customer.
+        is_admin = len(response.data) > 0
+        
+    except Exception as e:
+        print(f"Database error verifying staff status: {str(e)}")
+        # Fallback to False to protect app stability if DB connections stutter
+        is_admin = False
     # Attach it to the payload for the Next.js frontend to read
     return {
         **current_user,
