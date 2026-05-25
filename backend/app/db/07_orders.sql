@@ -1,6 +1,6 @@
 create table orders (
     ord_id serial primary key,
-    cust_id int not null,
+    cust_id uuid not null,
     fulfillment_id int not null,
     ord_time timestamp default current_timestamp,
     -- total_amount decimal (7, 2) not null,        -- derived attr hence reducted 

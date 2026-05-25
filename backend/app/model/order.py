@@ -1,9 +1,11 @@
 from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
+from uuid import UUID
+
 
 class OrderBase(BaseModel):
     """Shared fields: What the frontend sends to start an order."""
-    cust_id: int
+    cust_id: UUID
     total_amount: float = Field(ge=0)
     ord_pay_meth: str = Field(min_length=1, max_length=64) # e.g., 'GCash', 'Cash'
     ord_f_type: str = Field(min_length=1, max_length=64)   # e.g., 'Delivery', 'Pick_Up'

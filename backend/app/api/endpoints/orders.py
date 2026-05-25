@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from supabase import Client
+from uuid import UUID
 
 
 from app.model.order import Order, OrderCreate
@@ -79,7 +80,7 @@ def get_order_by_id(
     summary="Get orders by customer"
 )
 def get_orders_by_customer(
-    customer_id: int, 
+    customer_id: UUID, 
     repo: OrderRepository = Depends(get_order_repository)
 ):
     """

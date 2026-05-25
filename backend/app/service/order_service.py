@@ -1,4 +1,6 @@
 from typing import Any, List, Dict
+from uuid import UUID
+
 from app.repository.orders_repo import OrderRepository
 from app.repository.product_repo import ProductRepository
 from app.repository.cart_repo import CartRepository # Don't forget to import this!
@@ -18,7 +20,7 @@ class OrderService:
 
     # ? wont it be better to fetch also or ensure that the returned query 
     # ? contains cust_id that way we ensure that the grabbed query is made by the customer
-    def get_final_bill(self, order_id: int, cust_id: int) -> Dict[str, Any]:
+    def get_final_bill(self, order_id: int, cust_id: UUID) -> Dict[str, Any]:
         # 1. Fetch data
         order = self.order_repo.get_by_id(order_id)
         
