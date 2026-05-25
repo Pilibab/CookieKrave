@@ -6,7 +6,7 @@ from typing import List
 from app.model.customer import Customer, CustomerCreate
 from app.repository.customer_repo import CustomerRepository
 from app.db.supabase_client import supabase
-from app.api.deps import get_current_user
+from app.api.deps import require_admin, get_current_user
 
 def get_supabase():
     """Returns the globally initialized supabase client."""
@@ -20,7 +20,7 @@ def get_customer_repository(supabase: Client = Depends(get_supabase)) -> Custome
 router = APIRouter(
     prefix="/customers",
     tags=["Customers"],
-    dependencies=[Depends(get_current_user)]
+    # dependencies=[Depends(get_current_user)]
 )
 
 # Change @app to @router, and trim the paths since the prefix handles "/customers"
@@ -45,7 +45,8 @@ def create_customer(
 @router.get(
     "", 
     response_model=List[Customer], 
-    summary="Retrieve all customers"
+    summary="Retrieve all customers",
+    dependencies=[Depends(require_admin)] # Guarded: Admin/Staff or Validated Users only
 )
 def get_all_customers(repo: CustomerRepository = Depends(get_customer_repository)):
     return repo.get_all()
@@ -54,7 +55,8 @@ def get_all_customers(repo: CustomerRepository = Depends(get_customer_repository
 @router.get(
     "/{customer_id}", 
     response_model=Customer, 
-    summary="Get customer by ID"
+    summary="Get customer by ID",
+    dependencies=[Depends(get_current_user)] # Guarded
 )
 def get_customer_by_id(
     customer_id: int, 
@@ -69,7 +71,8 @@ def get_customer_by_id(
 @router.put(
     "/{customer_id}", 
     response_model=Customer, 
-    summary="Update an existing customer"
+    summary="Update an existing customer",
+    dependencies=[Depends(get_current_user)] # Guarded
 )
 def update_customer(
     customer_id: int, 
@@ -84,7 +87,8 @@ def update_customer(
 
 @router.delete(
     "/{customer_id}", 
-    summary="Delete a customer"
+    summary="Delete a customer",
+    dependencies=[Depends(get_current_user)] # Guarded
 )
 def delete_customer(
     customer_id: int, 
