@@ -1,5 +1,6 @@
 # backend/app/api/endpoints/admin.py
 from fastapi import APIRouter, Depends, HTTPException
+from typing import Any
 from app.api.deps import require_admin
 # An admin-specific supabase client initialized with your secret SERVICE_ROLE_KEY
 from app.db.supabase_client import supabase_admin 
@@ -9,7 +10,7 @@ router = APIRouter()
 @router.post("/admin/invite-staff")
 async def invite_staff_member(
     email: str, name: str
-    , current_admin: dict = Depends(require_admin)
+    , current_admin: dict[str, Any] = Depends(require_admin)
     ):
     try:
         # 1. Tell Supabase Auth to create a pending user and send an invite email
