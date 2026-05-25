@@ -1,6 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field, EmailStr
 from typing import Optional
 from datetime import datetime
+from uuid import UUID
 
 class CustomerBase(BaseModel):
     """
@@ -19,7 +20,7 @@ class CustomerBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class Customer(CustomerBase):
-    CUST_ID: int
+    CUST_ID: UUID
         
 
 
