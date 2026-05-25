@@ -1,4 +1,4 @@
-from repository.base_repo import BaseRepository
+from app.repository.base_repo import BaseRepository
 from supabase.client import Client
 from app.model.rider import Rider, RiderCreate
 

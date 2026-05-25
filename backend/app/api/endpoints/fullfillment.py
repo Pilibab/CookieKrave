@@ -4,12 +4,12 @@ from typing import List
 from supabase import Client
 
 
-from model.fullfillement import (
+from app.model.fullfillement import (
     Fulfillment, FulfillmentCreate,
     Delivery, DeliveryCreate,
     PickUp, PickUpCreate
 )
-from repository.fullfillment_repo import (
+from app.repository.fullfillment_repo import (
     FulfillmentRepository,
     DeliveryRepository,
     PickUpRepository

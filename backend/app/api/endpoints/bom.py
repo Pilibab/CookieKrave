@@ -3,9 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from supabase import Client
 
-
-from model.bom import Bom, BomCreate
-from repository.bom_repo import BOMRepository
+from app.model.bom import Bom, BomCreate
+from app.repository.bom_repo import BOMRepository
 from app.db.supabase_client import supabase
 
 def get_supabase():
