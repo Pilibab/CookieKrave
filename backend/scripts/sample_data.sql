@@ -11,9 +11,9 @@ VALUES
 (102, 'Red Velvet Cream', 'Red velvet cookie with cream cheese filling', 55.00, true, '2026-05-08');
 
 -- Populate RIDERS [cite: 22]
-INSERT INTO RIDER (RIDER_ID, RIDER_NAME, RIDER_CONTACT_NUM, CURRENT_LOCATION)
+INSERT INTO RIDER (RIDER_ID, RIDER_NAME, RIDER_CONTACT_NUM)
 VALUES 
-(1, 'John Doe', '+639111222333', 'Legazpi City Center');
+(1, 'John Doe', '+639111222333');
 
 -- Populate FULFILLMENT TYPES [cite: 23]
 -- This table defines the categories used by Delivery and Pick_Up
