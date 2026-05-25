@@ -1,8 +1,8 @@
 -- Populate CUSTOMERS [cite: 12]
-INSERT INTO CUSTOMERS (CUST_FIRSTNAME, CUST_LASTNAME, CUST_MIDDLENAME, CUST_EMAIL, CUST_SOCIAL_PROVIDER, CUST_SOCIALID, CUST_CONT_NO)
+INSERT INTO CUSTOMERS (CUST_FIRSTNAME, CUST_LASTNAME, CUST_MIDDLENAME, CUST_EMAIL, CUST_SOCIAL_PROVIDER, CUST_CONT_NO)
 VALUES 
-('Alice', 'Guo', 'V', 'alice.guo@email.com', 'google', 'google_12345', '+639123456789'),
-('Bob', 'Reyes', 'A', 'bob.reyes@email.com', 'facebook', 'fb_67890', '+639987654321');
+('Alice', 'Guo', 'V', 'alice.guo@email.com', 'google',  '+639123456789'),
+('Bob', 'Reyes', 'A', 'bob.reyes@email.com', 'facebook',  '+639987654321');
 
 -- Populate PRODUCTS [cite: 13]
 INSERT INTO PRODUCTS (PROD_ID, PROD_NAME, PROD_DESC, PROD_PRICE, PROD_AVAILABLE, PROD_SL)

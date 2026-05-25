@@ -11,10 +11,10 @@ class CustomerRepository(BaseRepository[Customer, CustomerCreate]):
     def get_by_email(self, CUST_EMAIL: str): 
         self.table.select("*").eq("CUST_EMAIL", CUST_EMAIL).execute()
 
-    def get_by_social_id(self, provider: str, CUST_SOCIALID: str):
-        return self.table.select("*"). \
-                eq("CUST_SOCIAL_PROVIDER", provider).\
-                eq("CUST_SOCIALID", CUST_SOCIALID).execute()
+    # def get_by_social_id(self, provider: str, CUST_SOCIALID: str):
+    #     return self.table.select("*"). \
+    #             eq("CUST_SOCIAL_PROVIDER", provider).\
+    #             eq("CUST_SOCIALID", CUST_SOCIALID).execute()
     
     def get_by_phone(self, phone_number: str):
         self.table.select("*").eq("CUST_CONT_NO", phone_number).execute()

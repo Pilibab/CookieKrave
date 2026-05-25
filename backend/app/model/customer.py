@@ -13,7 +13,6 @@ class CustomerBase(BaseModel):
     CUST_MIDDLENAME: str = Field(max_length=85)
     CUST_EMAIL: EmailStr
     CUST_SOCIAL_PROVIDER: Optional[str] = Field(None, pattern="^(google|facebook)$")
-    CUST_SOCIALID: Optional[str] = None
     CUST_CONT_NO: str = Field(..., max_length=20) # store in +63 format
 
     # This allows Pydantic to work with SQLAlchemy/SQLModel objects
