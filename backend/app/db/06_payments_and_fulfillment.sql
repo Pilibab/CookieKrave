@@ -1,25 +1,25 @@
-CREATE TABLE "FULFILLMENT" (
-    "FULFILLMENT_ID" SERIAL PRIMARY KEY,
-    "FULFILLMENT_TYPE" VARCHAR(50) NOT NULL,
-CONSTRAINT chk_FULFILLMENT_TYPE 
-CHECK (FULFILLMENT_TYPE IN ('Delivery', 'Pick_Up')));
+create table fulfillment (
+    fulfillment_id serial primary key,
+    fulfillment_type varchar(50) not null,
+constraint chk_fulfillment_type 
+check (fulfillment_type in ('Delivery', 'Pick_Up')));
 
-create TABLE "DELIVERY" (
-    "FULFILLMENT_ID" INT NOT NULL,
-    "RIDER_ID" INT NOT NULL,
-    "ADDRESS" VARCHAR(255) NOT NULL,
-    "CONTACT_NAME" VARCHAR(100) NULL,
-    "CONTACT_NUMBER" VARCHAR(20) NULL,
-    "NOTE" VARCHAR(500) NULL,
-    "FLOOR_UNIT_NUM" VARCHAR(50) NULL,
-CONSTRAINT DELIVERY_PK PRIMARY KEY (FULFILLMENT_ID),
-CONSTRAINT DELIVERY_FULFILLMENT_FK FOREIGN KEY (FULFILLMENT_ID) REFERENCES FULFILLMENT(FULFILLMENT_ID),
-CONSTRAINT DELIVERY_RIDER_FK FOREIGN KEY (RIDER_ID) REFERENCES RIDER(RIDER_ID));
+create table delivery (
+    fulfillment_id int not null,
+    rider_id int not null,
+    address varchar(255) not null,
+    contact_name varchar(100) null,
+    contact_number varchar(20) null,
+    note varchar(500) null,
+    floor_unit_num varchar(50) null,
+constraint delivery_pk primary key (fulfillment_id),
+constraint delivery_fulfillment_fk foreign key (fulfillment_id) references fulfillment(fulfillment_id),
+constraint delivery_rider_fk foreign key (rider_id) references rider(rider_id));
 
-CREATE TABLE "PICK_UP" (
-    "FULFILLMENT_ID" INT NOT NULL,
-    "PREFERRED_TIME" TIMESTAMP NULL, -- Changed DATETIME to TIMESTAMP
-    "PICK_UP_LOCATION" VARCHAR(255) NULL,
-CONSTRAINT PICKUP_PK PRIMARY KEY (FULFILLMENT_ID),
-CONSTRAINT PICKUP_FULFILLMENT_FK FOREIGN KEY (FULFILLMENT_ID) REFERENCES FULFILLMENT(FULFILLMENT_ID));
+create table pick_up (
+    fulfillment_id int not null,
+    preferred_time timestamp null, -- Changed DATETIME to TIMESTAMP
+    pick_up_location varchar(255) null,
+constraint pickup_pk primary key (fulfillment_id),
+constraint pickup_fulfillment_fk foreign key (fulfillment_id) references fulfillment(fulfillment_id));
 

@@ -3,10 +3,10 @@ from datetime import datetime
 
 class OrderBase(BaseModel):
     """Shared fields: What the frontend sends to start an order."""
-    CUST_ID: int
-    TOTAL_AMOUNT: float = Field(ge=0)
-    ORD_PAY_METH: str = Field(min_length=1, max_length=64) # e.g., 'GCash', 'Cash'
-    ORD_F_TYPE: str = Field(min_length=1, max_length=64)   # e.g., 'Delivery', 'Pick_Up'
+    cust_id: int
+    total_amount: float = Field(ge=0)
+    ord_pay_meth: str = Field(min_length=1, max_length=64) # e.g., 'GCash', 'Cash'
+    ord_f_type: str = Field(min_length=1, max_length=64)   # e.g., 'Delivery', 'Pick_Up'
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -22,5 +22,5 @@ class Order(OrderBase):
     Used for GET. 
     The database adds the specific ID and the timestamp.
     """
-    ORD_ID: int
-    ORD_TIME: datetime
+    ord_id: int
+    ord_time: datetime

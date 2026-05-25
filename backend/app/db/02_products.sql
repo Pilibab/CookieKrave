@@ -1,11 +1,11 @@
-CREATE TABLE "PRODUCTS" (
-    "PROD_ID" INT PRIMARY KEY,
-    "PROD_NAME" VARCHAR(64) NOT NULL,
-    "PROD_DESC" VARCHAR(255) NOT NULL,
-    "PROD_PRICE" DECIMAL (7, 2) NOT NULL, -- till xxxxx.xx
-    "PROD_AVAILABLE" BOOLEAN DEFAULT true,
-    "PROD_SL" DATE NOT NULL               -- SHELF LIFE 
-    "PROD_IMAGE_URL" VARCHAR(512) DEFAULT 'https://ghhowjijwfgffcbjlsxl.supabase.co/storage/v1/object/public/product_img/default_no_img.png';
-CONSTRAINT chk_PROD_PRICE
-CHECK (PROD_PRICE >= 0)
+create table products (
+    prod_id int primary key,
+    prod_name varchar(64) not null,
+    prod_desc varchar(255) not null,
+    prod_price decimal (7, 2) not null, -- till xxxxx.xx
+    prod_available boolean default true,
+    prod_sl date not null,               -- SHELF LIFE 
+    prod_image_url varchar(512) default 'https://ghhowjijwfgffcbjlsxl.supabase.co/storage/v1/object/public/product_img/default_no_img.png',
+constraint chk_prod_price
+check (prod_price >= 0)
 );

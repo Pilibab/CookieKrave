@@ -6,30 +6,30 @@ from postgrest.types import CountMethod
 class CustomerRepository(BaseRepository[Customer, CustomerCreate]):
     def __init__(self, supabase: Client):
         # Pass the actual table name and the model class to the parent
-        super().__init__(supabase, "CUSTOMERS", Customer, "CUST_ID")
+        super().__init__(supabase, "customers", Customer, "cust_id")
 
-    def get_by_email(self, CUST_EMAIL: str): 
-        self.table.select("*").eq("CUST_EMAIL", CUST_EMAIL).execute()
+    def get_by_email(self, cust_email: str): 
+        self.table.select("*").eq("cust_email", cust_email).execute()
 
-    # def get_by_social_id(self, provider: str, CUST_SOCIALID: str):
+    # def get_by_social_id(self, provider: str, cust_social_id: str):
     #     return self.table.select("*"). \
-    #             eq("CUST_SOCIAL_PROVIDER", provider).\
-    #             eq("CUST_SOCIALID", CUST_SOCIALID).execute()
+    #             eq("cust_social_provider", provider).\
+    #             eq("cust_social_id", cust_social_id).execute()
     
     def get_by_phone(self, phone_number: str):
-        self.table.select("*").eq("CUST_CONT_NO", phone_number).execute()
+        self.table.select("*").eq("cust_cont_no", phone_number).execute()
 
     # validation 
-    def is_email_taken(self, CUST_EMAIL: str) -> bool:
+    def is_email_taken(self, cust_email: str) -> bool:
         result = self.table.select("*", count=CountMethod.exact, head=True).\
-                            eq("CUST_EMAIL", CUST_EMAIL).execute()
+                            eq("cust_email", cust_email).execute()
 
         return self.validate_existence(result)
         
 
     def is_phone_registered(self, phone_number: str):
         result = self.table.select("*", count=CountMethod.exact, head=True).\
-                            eq("CUST_CONT_NO", phone_number).execute()
+                            eq("cust_cont_no", phone_number).execute()
         
         return self.validate_existence(result)
 

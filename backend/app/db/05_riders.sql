@@ -1,4 +1,4 @@
-CREATE TABLE "RIDER" (
-    "RIDER_ID" INT PRIMARY KEY,                   -- from delivery app 
-    "RIDER_NAME" VARCHAR(100) NOT NULL,
-    "RIDER_CONTACT_NUM" VARCHAR(20) NOT NULL);
+create table rider (
+    rider_id int primary key,                   -- from delivery app 
+    rider_name varchar(100) not null,
+    rider_contact_num varchar(20) not null);

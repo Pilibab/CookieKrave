@@ -33,25 +33,25 @@ class OrderService:
 
         # 2. Stitch the data together
         for item in items:
-            product = self.prod_repo.get_by_id(item.PROD_ID)
+            product = self.prod_repo.get_by_id(item.prod_id)
             
             # Guard clause: Check if product exists in inventory
             if product is None:
                 continue # Skip this item if product doesn't exist
             
-            line_total = float(item.CART_QUAN * product.PROD_PRICE)
+            line_total = float(item.cart_quan * product.prod_price)
             grand_total += line_total
             
             bill_details.append({
-                "product": product.PROD_NAME,
-                "quantity": item.CART_QUAN,
-                "PROD_PRICE": product.PROD_PRICE,
+                "product": product.prod_name,
+                "quantity": item.cart_quan,
+                "prod_price": product.prod_price,
                 "subtotal": line_total
             })
 
         return {
-            "order_no": order.ORD_ID,
-            "date": order.ORD_TIME,
+            "order_no": order.ord_id,
+            "date": order.ord_time,
             "total": grand_total,
             "items": bill_details
         }
@@ -60,17 +60,17 @@ class OrderService:
         """
             creates order instance and populate cart table 
             args: { 
-                CUST_ID,
-                TOTAL_AMOUNT,
-                ORD_PAY_METH, 
-                ORD_F_TYPE, 
+                cust_id,
+                total_amount,
+                ord_pay_meth, 
+                ord_f_type, 
                 prod_ids: list[int | str]}
         """
         order_to_create = OrderCreate(
-            CUST_ID= order_details["CUST_ID"],
-            TOTAL_AMOUNT=order_details["TOTAL_AMOUNT"],
-            ORD_PAY_METH= order_details["ORD_PAY_METH"],
-            ORD_F_TYPE= order_details["ORD_F_TYPE"]
+            cust_id= order_details["cust_id"],
+            total_amount=order_details["total_amount"],
+            ord_pay_meth= order_details["ord_pay_meth"],
+            ord_f_type= order_details["ord_f_type"]
         )
 
         ordered_prod =  order_details["prod_ids"]
@@ -80,12 +80,12 @@ class OrderService:
             new_order = self.order_repo.create(order_to_create)
 
             # populate cart 
-            self.cart_repo.create_order_line(order_id=new_order.ORD_ID, items=ordered_prod)
+            self.cart_repo.create_order_line(order_id=new_order.ord_id, items=ordered_prod)
 
             return {
                 "status": "Success",
-                "order_id": new_order.ORD_ID,
-                "time": new_order.ORD_TIME
+                "order_id": new_order.ord_id,
+                "time": new_order.ord_time
             }
         
         except Exception as e:

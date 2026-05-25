@@ -6,22 +6,22 @@ class StaffBase(BaseModel):
     """
         Used for reading data from the database
     """
-    STAFF_NAME: str = Field(min_length=1, max_length=64)
-    STAFF_EMAIL: EmailStr
-    ROLE: str = Field(default='admin', pattern="^(admin|manager|baker)$")
+    staff_name: str = Field(min_length=1, max_length=64)
+    staff_email: EmailStr
+    role: str = Field(default='admin', pattern="^(admin|manager|baker)$")
 
     # This allows Pydantic to work with SQLAlchemy/SQLModel objects
     model_config = ConfigDict(from_attributes=True)
 
 
 class Staff(StaffBase):
-    STAFF_ID: UUID
+    staff_id: UUID
 
 
 class StaffCreate(BaseModel):
     """Used when receiving data from the Frontend (ID isn't created yet)"""
-    STAFF_NAME: str = Field(min_length=1, max_length=64)
-    STAFF_EMAIL: EmailStr
-    ROLE: Optional[str] = Field(default='admin', pattern="^(admin|manager|baker)$")
+    staff_name: str = Field(min_length=1, max_length=64)
+    staff_email: EmailStr
+    role: Optional[str] = Field(default='admin', pattern="^(admin|manager|baker)$")
 
     model_config = ConfigDict(from_attributes=True)

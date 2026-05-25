@@ -35,9 +35,9 @@ def create_customer(
     customer_in: CustomerCreate, 
     repo: CustomerRepository = Depends(get_customer_repository)
 ):
-    if repo.is_email_taken(customer_in.CUST_EMAIL):
+    if repo.is_email_taken(customer_in.cust_email):
         raise HTTPException(status_code=400, detail="Email address already registered.")
-    if repo.is_phone_registered(customer_in.CUST_CONT_NO):
+    if repo.is_phone_registered(customer_in.cust_cont_no):
         raise HTTPException(status_code=400, detail="Contact number already registered.")
     return repo.create(customer_in)
 

@@ -8,19 +8,19 @@ from app.model.fullfillement import PickUp, PickUpCreate
 
 class FulfillmentRepository(BaseRepository[Fulfillment, FulfillmentCreate]):
     def __init__(self, supabase: Client):
-        super().__init__(supabase, "FULFILLMENT", Fulfillment, "FULFILLMENT_ID")
+        super().__init__(supabase, "fulfillment", Fulfillment, "fulfillment_id")
 
 class DeliveryRepository(BaseRepository[Delivery, DeliveryCreate]):
     def __init__(self, supabase: Client):
-        # NOTE: Using "DELIEVERY" to match your SQL schema exactly
-        super().__init__(supabase, "DELIEVERY", Delivery, "FULFILLMENT_ID")
+        # NOTE: Using "delivery" to match your SQL schema
+        super().__init__(supabase, "delivery", Delivery, "fulfillment_id")
 
-    def get_deliveries_by_rider(self, RIDER_ID: int) -> List[Delivery]:
+    def get_deliveries_by_rider(self, rider_id: int) -> List[Delivery]:
         """Finds all delivery tasks assigned to a specific rider."""
-        response = self.table.select("*").eq("RIDER_ID", RIDER_ID).execute()
+        response = self.table.select("*").eq("rider_id", rider_id).execute()
         data = cast(List[Dict[str, Any]], response.data)
         return [self.model_class(**item) for item in data]
 
 class PickUpRepository(BaseRepository[PickUp, PickUpCreate]):
     def __init__(self, supabase: Client):
-        super().__init__(supabase, "PICK_UP", PickUp, "FULFILLMENT_ID")
+        super().__init__(supabase, "pick_up", PickUp, "fulfillment_id")

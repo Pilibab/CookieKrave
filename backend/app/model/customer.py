@@ -7,19 +7,19 @@ class CustomerBase(BaseModel):
     """
         used for reading data from the data base
     """
-    CUST_CD: datetime
-    CUST_FIRSTNAME: str = Field(min_length=5, max_length=85)
-    CUST_LASTNAME: str = Field(min_length=5, max_length=85)
-    CUST_MIDDLENAME: str = Field(max_length=85)
-    CUST_EMAIL: EmailStr
-    CUST_SOCIAL_PROVIDER: Optional[str] = Field(None, pattern="^(google|facebook)$")
-    CUST_CONT_NO: str = Field(..., max_length=20) # store in +63 format
+    cust_cd: datetime
+    cust_firstname: str = Field(min_length=5, max_length=85)
+    cust_lastname: str = Field(min_length=5, max_length=85)
+    cust_middlename: str = Field(max_length=85)
+    cust_email: EmailStr
+    cust_social_provider: Optional[str] = Field(None, pattern="^(google|facebook)$")
+    cust_cont_no: str = Field(..., max_length=20) # store in +63 format
 
     # This allows Pydantic to work with SQLAlchemy/SQLModel objects
     model_config = ConfigDict(from_attributes=True)
 
 class Customer(CustomerBase):
-    CUST_ID: UUID
+    cust_id: UUID
         
 
 

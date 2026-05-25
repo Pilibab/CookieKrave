@@ -1,18 +1,18 @@
-CREATE TABLE "BOM" (
-    "BOM_ID" SERIAL PRIMARY KEY,
-    "PROD_ID" INT NOT NULL,
-    "INV_ID" INT NOT NULL,
-    "BOM_QUAN_REQ" DECIMAL(12, 3) NOT NULL, -- QUANTITY REQUIRED 
+create table bom (
+    bom_id serial primary key,
+    prod_id int not null,
+    inv_id int not null,
+    bom_quan_req decimal(12, 3) not null, -- QUANTITY REQUIRED 
 
     -- Define the Foreign Key constraints
-    CONSTRAINT fk_product 
-        FOREIGN KEY (PROD_ID) 
-        REFERENCES PRODUCTS(PROD_ID),
+    constraint fk_product 
+        foreign key (prod_id) 
+        references products(prod_id),
 
-    CONSTRAINT fk_component 
-        FOREIGN KEY (INV_ID) 
-        REFERENCES INVENTORY (INV_ID),
+    constraint fk_component 
+        foreign key (inv_id) 
+        references inventory (inv_id),
 
-    CONSTRAINT chk_quantity_required
-    CHECK (BOM_QUAN_REQ > 0)
+    constraint chk_quantity_required
+    check (bom_quan_req > 0)
 );

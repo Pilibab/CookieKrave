@@ -25,13 +25,13 @@ class SupplyChainService:
         items = self.cart_repo.get_items_by_order(order_id)
 
         for item in items:
-            #get all INV_ID that has matching PROD_ID
-            recipe = self.bom_repo.get_stock(item.PROD_ID)
+            #get all inv_id that has matching prod_id
+            recipe = self.bom_repo.get_stock(item.prod_id)
 
             for ingredient in recipe:
                 # Get the raw material info from Inventory
-                total_needed : float = ingredient.BOM_QUAN_REQ * item.CART_QUAN
-                material_id : int = ingredient.INV_ID
+                total_needed : float = ingredient.bom_quan_req * item.cart_quan
+                material_id : int = ingredient.inv_id
 
                 # Logic to subtract stock 
                 # sends the negative value of the amount req for decrement hehehe

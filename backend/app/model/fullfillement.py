@@ -7,7 +7,7 @@ from datetime import datetime
 # ==========================================
 class FulfillmentBase(BaseModel):
     # Field(pattern=...) ensures the API outright rejects any typo like "deliver" or "pickup"
-    FULFILLMENT_TYPE: str = Field(pattern="^(Delivery|Pick_Up)$")
+    fulfillment_type: str = Field(pattern="^(Delivery|Pick_Up)$")
 
 class FulfillmentCreate(FulfillmentBase):
     """Data expected from the frontend when making a new order."""
@@ -15,7 +15,7 @@ class FulfillmentCreate(FulfillmentBase):
 
 class Fulfillment(FulfillmentBase):
     """Data returned from the database."""
-    FULFILLMENT_ID: int 
+    fulfillment_id: int 
     
     model_config = ConfigDict(from_attributes=True)
 
@@ -24,15 +24,15 @@ class Fulfillment(FulfillmentBase):
 # 2. DELIVERY MODELS
 # ==========================================
 class DeliveryBase(BaseModel):
-    # RIDER_ID is required (non-null)
-    RIDER_ID: int
-    ADDRESS: str = Field(max_length=255)
+    # rider_id is required (non-null)
+    rider_id: int
+    address: str = Field(max_length=255)
     
     # These are NULL in your SQL, so we use Optional[] and default=None
-    CONTACT_NAME: Optional[str] = Field(default=None, max_length=100)
-    CONTACT_NUMBER: Optional[str] = Field(default=None, max_length=20)
-    NOTE: Optional[str] = Field(default=None, max_length=500)
-    FLOOR_UNIT_NUM: Optional[str] = Field(default=None, max_length=50)
+    contact_name: Optional[str] = Field(default=None, max_length=100)
+    contact_number: Optional[str] = Field(default=None, max_length=20)
+    note: Optional[str] = Field(default=None, max_length=500)
+    floor_unit_num: Optional[str] = Field(default=None, max_length=50)
 
 class DeliveryCreate(DeliveryBase):
     """Data expected from frontend."""
@@ -40,7 +40,7 @@ class DeliveryCreate(DeliveryBase):
 
 class Delivery(DeliveryBase):
     """Data returned from database."""
-    FULFILLMENT_ID: int # This acts as the PK and the FK!
+    fulfillment_id: int # This acts as the PK and the FK!
     
     model_config = ConfigDict(from_attributes=True)
 
@@ -50,8 +50,8 @@ class Delivery(DeliveryBase):
 # ==========================================
 class PickUpBase(BaseModel):
     # Both fields are nullable in your SQL
-    PREFERRED_TIME: Optional[datetime] = None
-    PICK_UP_LOCATION: Optional[str] = Field(default=None, max_length=255)
+    preferred_time: Optional[datetime] = None
+    pick_up_location: Optional[str] = Field(default=None, max_length=255)
 
 class PickUpCreate(PickUpBase):
     """Data expected from frontend."""
@@ -59,6 +59,6 @@ class PickUpCreate(PickUpBase):
 
 class PickUp(PickUpBase):
     """Data returned from database."""
-    FULFILLMENT_ID: int
+    fulfillment_id: int
     
     model_config = ConfigDict(from_attributes=True)

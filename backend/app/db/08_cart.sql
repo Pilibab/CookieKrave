@@ -1,11 +1,11 @@
-CREATE TABLE "CART" (
-    "ORD_ID" int NOT NULL,
-    "PROD_ID" int NOT NULL,
-    "CART_QUAN" int DEFAULT 1,
-    CONSTRAINT FK_order_id
-        FOREIGN KEY (ORD_ID) 
-        REFERENCES ORDERS(ORD_ID),
-    CONSTRAINT FK_product_id
-        FOREIGN KEY (PROD_ID) 
-        REFERENCES PRODUCTS(PROD_ID)
+create table cart (
+    ord_id int not null,
+    prod_id int not null,
+    cart_quan int default 1,
+    constraint fk_order_id
+        foreign key (ord_id) 
+        references orders(ord_id),
+    constraint fk_product_id
+        foreign key (prod_id) 
+        references products(prod_id)
 );

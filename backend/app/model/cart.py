@@ -4,9 +4,9 @@ class CartBase(BaseModel):
     """
         used for reading data from the data base
     """
-    ORD_ID:int
-    PROD_ID:int
-    CART_QUAN: int = 1
+    ord_id: int
+    prod_id: int
+    cart_quan: int = 1
 
 
     # This allows Pydantic to work with SQLAlchemy/SQLModel objects

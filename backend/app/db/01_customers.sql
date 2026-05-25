@@ -1,10 +1,10 @@
-CREATE TABLE "CUSTOMERS" (
-    "CUST_ID" UUID PRIMARY KEY, 
-    "CUST_FIRSTNAME" VARCHAR(50) NOT NULL, 
-    "CUST_LASTNAME" VARCHAR(50) NOT NULL, 
-    "CUST_MIDDLENAME" VARCHAR(50), 
-    "CUST_EMAIL" VARCHAR(255) UNIQUE NOT NULL,
-    "CUST_SOCIAL_PROVIDER" VARCHAR(50), -- 'google' | 'facebook'
-    "CUST_CONT_NO" VARCHAR(20) NOT NULL,          -- contact number 
-    "CUST_CD" TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- THIS IS CREATE DATE 
+create table customers (
+    cust_id uuid primary key, 
+    cust_firstname varchar(50) not null, 
+    cust_lastname varchar(50) not null, 
+    cust_middlename varchar(50), 
+    cust_email varchar(255) unique not null,
+    cust_social_provider varchar(50), -- 'google' | 'facebook'
+    cust_cont_no varchar(20) not null,          -- contact number 
+    cust_cd timestamp default current_timestamp -- THIS IS CREATE DATE 
 );

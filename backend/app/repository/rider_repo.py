@@ -4,8 +4,8 @@ from app.model.rider import Rider, RiderCreate
 
 class RiderRepository(BaseRepository[Rider, RiderCreate]):
     def __init__(self, supabase: Client):
-        super().__init__(supabase, "RIDER", Rider, "RIDER_ID")
+        super().__init__(supabase, "rider", Rider, "rider_id")
 
-    # def update_location(self, RIDER_ID: int, new_location: str):
+    # def update_location(self, rider_id: int, new_location: str):
     #     """Quick method to update a rider's real-time location."""
-    #     return self.table.update({"CURRENT_LOCATION": new_location}).eq("RIDER_ID", RIDER_ID).execute().data
+    #     return self.table.update({"current_location": new_location}).eq("rider_id", rider_id).execute().data

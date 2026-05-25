@@ -1,23 +1,23 @@
-CREATE TABLE "ORDERS" (
-    "ORD_ID" SERIAL PRIMARY KEY,
-    "CUST_ID" int NOT NULL,
-    "FULFILLMENT_ID" int NOT NULL,
-    "ORD_TIME" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- total_amount DECIMAL (7, 2) NOT NULL,        -- derived attr hence reducted 
-    "ORD_PAY_METH" VARCHAR(64),                       -- BOth payment and fullfillment method should be its own entity i think 
+create table orders (
+    ord_id serial primary key,
+    cust_id int not null,
+    fulfillment_id int not null,
+    ord_time timestamp default current_timestamp,
+    -- total_amount decimal (7, 2) not null,        -- derived attr hence reducted 
+    ord_pay_meth varchar(64),                       -- BOth payment and fullfillment method should be its own entity i think 
                                                     -- well see how it goes    
 
-    "ORD_STATUS" VARCHAR(25) DEFAULT 'PENDING',
-    "ORD_FULFILLMENT_TIME" TIMESTAMP,
+    ord_status varchar(25) default 'PENDING',
+    ord_fulfillment_time timestamp,
 
-    CONSTRAINT chk_ORD_STATUS 
-        CHECK (ORD_STATUS IN ('PENDING', 'DELIVERE D')),
+    constraint chk_ord_status 
+        check (ord_status in ('PENDING', 'DELIVERED')),
 
-    CONSTRAINT FK_customer_id
-        FOREIGN KEY (CUST_ID) 
-        REFERENCES CUSTOMERS(CUST_ID),
+    constraint fk_customer_id
+        foreign key (cust_id) 
+        references customers(cust_id),
 
-    CONSTRAINT FK_fullfillment_id
-        FOREIGN KEY (FULFILLMENT_ID) 
-        REFERENCES FULFILLMENT(FULFILLMENT_ID)
+    constraint fk_fulfillment_id
+        foreign key (fulfillment_id) 
+        references fulfillment(fulfillment_id)
 ); 

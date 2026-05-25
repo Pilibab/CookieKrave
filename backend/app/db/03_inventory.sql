@@ -1,13 +1,16 @@
+-- Drop the type if it already exists (and cascade it to clear dependent columns if re-running)
+drop type if exists unit_type cascade;
 
-CREATE TYPE IF NOT EXISTS unit_type AS ENUM ('pcs', 'ml', 'g', 'kg');
+-- Now create it cleanly without the invalid syntax
+create type unit_type as enum ('pcs', 'ml', 'g', 'kg');
 
-CREATE TABLE "INVENTORY" (
-    "INV_ID" SERIAL PRIMARY KEY,
-    "INV_ING_NAME" VARCHAR(64) NOT NULL,
-    "INV_STOCK" DECIMAL(10,3) NOT NULL DEFAULT 0.0,
-    "INV_UOM" unit_type NOT NULL, 
-    "INV_RT" DECIMAL(10,2) NOT NULL DEFAULT 0,
+create table inventory (
+    inv_id serial primary key,
+    inv_ing_name varchar(64) not null,
+    inv_stock decimal(10,3) not null default 0.0,
+    inv_uom unit_type not null, 
+    inv_rt decimal(10,2) not null default 0,
 
-    CONSTRAINT chk_current_stock CHECK (INV_STOCK >= 0),
-    CONSTRAINT chk_reorder_trigger CHECK (INV_RT >= 0)
+    constraint chk_current_stock check (inv_stock >= 0),
+    constraint chk_reorder_trigger check (inv_rt >= 0)
 );
