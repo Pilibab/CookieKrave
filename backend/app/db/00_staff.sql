@@ -1,0 +1,8 @@
+CREATE TABLE STAFF (
+    STAFF_ID UUID PRIMARY KEY,
+    STAFF_NAME VARCHAR(64) NOT NULL,
+    STAFF_EMAIL VARCHAR(255) UNIQUE NOT NULL,
+    ROLE VARCHAR(20) DEFAULT 'admin' NOT NULL, -- Defaults to admin automatically!
+    
+    CONSTRAINT chk_STAFF_ROLE CHECK (ROLE IN ('admin', 'manager', 'baker'))
+);
