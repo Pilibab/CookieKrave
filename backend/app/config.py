@@ -12,6 +12,7 @@ class AppConfig(BaseSettings):
     SUPABASE_KEY: SecretStr = Field(alias="SUPABASE_KEY")
     SUPABASE_URL: SecretStr = Field(alias="SUPABASE_URL")
     DATABASE_URL: SecretStr = Field(alias="DATABASE_URL")
+    SUPABASE_KEY_ADMIN: SecretStr = Field(alias="SUPABASE_KEY_ADMIN")
     DIRECT_URL: SecretStr = Field(alias="DIRECT_URL")
     
     # change this this is just a template 

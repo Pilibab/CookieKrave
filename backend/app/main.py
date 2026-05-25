@@ -1,9 +1,16 @@
 # backend/app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.endpoints.admin import router as admin_router
+from app.api.endpoints.bom import router as bom_router
+from app.api.endpoints.cart import router as cart_router
 from app.api.endpoints.customer import router as customer_router
+from app.api.endpoints.fullfillment import router as fullfillment_router
+from app.api.endpoints.inventory import router as inventory_router
+from app.api.endpoints.orders import router as orders_router
 from app.api.endpoints.products import router as product_router
-
+from app.api.endpoints.riders import router as riders_router
+from app.api.auth import router as auth_router
 
 app = FastAPI(
     title="CookieKrave API",
@@ -27,8 +34,19 @@ app.add_middleware(
 )
 
 # Register your router here
-app.include_router(customer_router)
-app.include_router(product_router)
+app.include_router(customer_router, prefix="/api")
+app.include_router(product_router, prefix="/api")
+app.include_router(admin_router, prefix="/api")
+app.include_router(bom_router, prefix="/api")
+app.include_router(cart_router, prefix="/api")
+app.include_router(fullfillment_router[0], prefix="/api")
+app.include_router(fullfillment_router[1], prefix="/api")
+app.include_router(fullfillment_router[2], prefix="/api")
+app.include_router(inventory_router, prefix="/api")
+app.include_router(orders_router, prefix="/api")
+app.include_router(riders_router, prefix="/api")
+app.include_router(auth_router, prefix="/api")
+
 
 @app.get("/")
 def root():
