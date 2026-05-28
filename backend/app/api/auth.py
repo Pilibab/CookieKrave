@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.api.deps import get_current_user
 from typing import Any
+from nameparser import HumanName
 
+from app.repository.customer_repo import CustomerRepository
+from app.model.customer import CustomerCreate
+from app.api.deps import get_current_user
 from app.db.supabase_client import supabase_admin 
-from typing import Any
 # Define the router instead of importing app
 router = APIRouter(
     prefix="/auth",
@@ -12,23 +14,51 @@ router = APIRouter(
 )
 
 @router.get("/me", summary="Validate token and return current user profile")
-def get_authenticated_user(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def sync_user_profile(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     """
     determins if the user is an admin/staff member.
     """
-    user_id = current_user.get("sub") # Supabase stores the user ID in the 'sub' claim
-    
+    # initialize repo
+    print(current_user)
+    cust_repo = CustomerRepository(supabase_admin)
+
+    user_id = current_user.get("sub") 
+    email = current_user.get("email")
+
     if not user_id:
         raise HTTPException(status_code=401, detail="Invalid token claims: missing 'sub'.")
     
+    if not email:
+        raise HTTPException(status_code=401, detail="Missing email.")
+    
+    provider = current_user.get("app_metadata", {}).get("provider")
+    full_name = HumanName(current_user.get("user_metadata", {}).get("full_name"))
+    first_name = full_name.first
+    middle_name = full_name.middle
+    last_name = full_name.last
+
+    # Initialize fallback flags safely at the top level scope
+    is_admin = False
+    
     try: 
-        # Check if this user exists in your staff/admin table
-        # Adjust this query based on how your 00_staff.sql is structured!
-        response = supabase_admin.table("staff").select("id").eq("auth_id", user_id).execute()
-        
-        # If a record comes back, they are staff. Otherwise, standard customer.
-        is_admin = len(response.data) > 0
-        
+        #! use repo for this 
+        staff_res = supabase_admin.table("staff").select("id").eq("staff_id", user_id).execute()
+
+        # checks if the token bearer has admin role
+        if len(staff_res.data) > 0:
+            return {"is_admin": True, "role": "admin", "email": email}
+
+        if cust_repo.is_social_user_registered(user_id):
+            new_customer = CustomerCreate(
+                cust_firstname=first_name,
+                cust_lastname=last_name,
+                cust_middlename=middle_name if middle_name else "",
+                cust_email=email,
+                cust_cont_no=current_user.get("phone") or "Not Provided",
+                cust_social_provider=provider,
+            )
+
+            cust_repo.create(new_customer)
     except Exception as e:
         print(f"Database error verifying staff status: {str(e)}")
         # Fallback to False to protect app stability if DB connections stutter
