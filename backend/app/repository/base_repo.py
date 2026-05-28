@@ -2,7 +2,7 @@ from typing import Any, cast, Generic, TypeVar, Optional
 from pydantic import BaseModel
 from supabase.client import Client
 from postgrest import APIResponse
-
+from uuid import UUID
 # allows base repo polymorphism 
 # bounding allows data model_dump in line 32, 36 without bound data is treated as an object which 
 # doesnt have model_dump method 
@@ -29,7 +29,7 @@ class BaseRepository(Generic[T, C]):
         return self.table.select("*").execute().data
 
     # It uses the Primary Key (the ID) to grab one specific record.
-    def get_by_id(self, id: str | int) -> Optional[T]:
+    def get_by_id(self, id: UUID | int) -> Optional[T]:
         """get an instance from a table (that is not an associative entity), using only one id"""
         data = self.table.select("*").eq(self.pk_field , id).execute().data
 
