@@ -86,8 +86,7 @@ def delete_cart_item(
     Removes a specific product from a cart/order.
     """
     # Verify the item exists by checking the order's cart
-    items = repo.get_items_by_order(order_id)
-    item_exists = any(item.PROD_ID == product_id for item in items)
+    item_exists = repo.check_item_in_cart(order_id, product_id)
     
     if not item_exists:
         raise HTTPException(

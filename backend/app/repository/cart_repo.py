@@ -3,7 +3,7 @@ from typing import List
 from app.repository.base_repo import BaseRepository
 from supabase.client import Client
 from app.model.cart import Cart, CartCreate
-
+from postgrest.types import CountMethod # <-- Import the Enum class here
 
 class CartRepository(BaseRepository[Cart, CartCreate]):
 
@@ -32,3 +32,15 @@ class CartRepository(BaseRepository[Cart, CartCreate]):
                 cart_quan=item["cart_quan"]
             )
             self.create(item_instance)
+
+    # Inside your CartRepository class:
+    def check_item_in_cart(self, order_id: int, product_id: int) -> bool:
+        # Query for the specific single row matching BOTH keys
+        result = self.table\
+            .select("order_id", count=CountMethod.exact) \
+            .eq("order_id", order_id) \
+            .eq("product_id", product_id) \
+            .execute()
+            
+        # Reuse your loud validation method here!
+        return self.validate_existence(result)
