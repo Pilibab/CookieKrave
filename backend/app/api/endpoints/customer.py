@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from supabase import  Client
 from typing import List
+from uuid import UUID
 
 from app.model.customer import Customer, CustomerCreate
 from app.repository.customer_repo import CustomerRepository
@@ -35,10 +36,12 @@ def create_customer(
     customer_in: CustomerCreate, 
     repo: CustomerRepository = Depends(get_customer_repository)
 ):
+    """when user updates info / manually puts info """
     if repo.is_email_taken(customer_in.cust_email):
         raise HTTPException(status_code=400, detail="Email address already registered.")
-    if repo.is_phone_registered(customer_in.cust_cont_no):
-        raise HTTPException(status_code=400, detail="Contact number already registered.")
+    if customer_in.cust_cont_no:
+        if repo.is_phone_registered(customer_in.cust_cont_no):
+            raise HTTPException(status_code=400, detail="Contact number already registered.")
     return repo.create(customer_in)
 
 
@@ -59,7 +62,7 @@ def get_all_customers(repo: CustomerRepository = Depends(get_customer_repository
     dependencies=[Depends(get_current_user)] # Guarded
 )
 def get_customer_by_id(
-    customer_id: int, 
+    customer_id: UUID, 
     repo: CustomerRepository = Depends(get_customer_repository)
 ):
     customer = repo.get_by_id(customer_id)
@@ -75,7 +78,7 @@ def get_customer_by_id(
     dependencies=[Depends(get_current_user)] # Guarded
 )
 def update_customer(
-    customer_id: int, 
+    customer_id: UUID, 
     customer_data: Customer, 
     repo: CustomerRepository = Depends(get_customer_repository)
 ):
@@ -91,7 +94,7 @@ def update_customer(
     dependencies=[Depends(get_current_user)] # Guarded
 )
 def delete_customer(
-    customer_id: int, 
+    customer_id: UUID, 
     repo: CustomerRepository = Depends(get_customer_repository)
 ):
     if not repo.get_by_id(customer_id):

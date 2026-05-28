@@ -2,7 +2,7 @@ from app.repository.base_repo import BaseRepository
 from supabase.client import Client
 from app.model.customer import Customer, CustomerCreate
 from postgrest.types import CountMethod
-
+from uuid import UUID
 class CustomerRepository(BaseRepository[Customer, CustomerCreate]):
     def __init__(self, supabase: Client):
         # Pass the actual table name and the model class to the parent
@@ -33,4 +33,9 @@ class CustomerRepository(BaseRepository[Customer, CustomerCreate]):
         
         return self.validate_existence(result)
 
-        
+    def is_social_user_registered(self, social_id: UUID) -> bool:
+        """Checks if this specific Google/Facebook account has a profile yet."""
+        result = self.table.select("customer_id", count=CountMethod.exact, head=True) \
+            .eq("social_id", social_id) \
+            .execute()
+        return self.validate_existence(result)
