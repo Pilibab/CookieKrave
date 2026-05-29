@@ -104,6 +104,7 @@ tinycss2==1.4.0
 tornado==6.5.5
 traitlets==5.15.0
 typer==0.24.1
+types-nameparser==0.3.2
 typing==3.7.4.3
 typing-inspection==0.4.2
 typing_extensions==4.15.0
