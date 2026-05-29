@@ -24,32 +24,37 @@ def sync_user_profile(current_user: dict[str, Any] = Depends(get_current_user)) 
 
     user_id = current_user.get("sub") 
     email = current_user.get("email")
+    cust_id=current_user.get("sub")
 
     if not user_id:
         raise HTTPException(status_code=401, detail="Invalid token claims: missing 'sub'.")
     
-    if not email:
+    if not cust_id:
         raise HTTPException(status_code=401, detail="Missing email.")
+    
+    if not email:
+        raise HTTPException(status_code=401, detail="Missing jwt identifier.")
     
     provider = current_user.get("app_metadata", {}).get("provider")
     full_name = HumanName(current_user.get("user_metadata", {}).get("full_name"))
-    first_name = full_name.first
-    middle_name = full_name.middle
-    last_name = full_name.last
+    first_name = full_name.first.title()
+    middle_name = full_name.middle.title()
+    last_name = full_name.last.title()
 
     # Initialize fallback flags safely at the top level scope
     is_admin = False
     
     try: 
         #! use repo for this 
-        staff_res = supabase_admin.table("staff").select("id").eq("staff_id", user_id).execute()
+        staff_res = supabase_admin.table("staff").select("staff_id").eq("staff_id", user_id).execute()
 
         # checks if the token bearer has admin role
         if len(staff_res.data) > 0:
             return {"is_admin": True, "role": "admin", "email": email}
 
-        if cust_repo.is_social_user_registered(user_id):
+        if not cust_repo.is_user_registered(user_id):
             new_customer = CustomerCreate(
+                cust_id=cust_id,
                 cust_firstname=first_name,
                 cust_lastname=last_name,
                 cust_middlename=middle_name if middle_name else "",
@@ -57,13 +62,14 @@ def sync_user_profile(current_user: dict[str, Any] = Depends(get_current_user)) 
                 cust_cont_no=current_user.get("phone") or "Not Provided",
                 cust_social_provider=provider,
             )
-
             cust_repo.create(new_customer)
     except Exception as e:
-        print(f"Database error verifying staff status: {str(e)}")
-        # Fallback to False to protect app stability if DB connections stutter
-        is_admin = False
-    # Attach it to the payload for the Next.js frontend to read
+        print(f"[CRITICAL AUTH FAILURE] Database error during identity sync: {str(e)}")
+        # FAIL LOUDLY: Stop the login flow if the database stutters!
+        raise HTTPException(
+            status_code=500, 
+            detail="Identity synchronization engine failure. Please try again later."
+        )
     return {
         **current_user,
         "is_admin": is_admin,
