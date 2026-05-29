@@ -33,9 +33,9 @@ class CustomerRepository(BaseRepository[Customer, CustomerCreate]):
         
         return self.validate_existence(result)
 
-    def is_social_user_registered(self, social_id: UUID) -> bool:
+    def is_user_registered(self, cust_id: UUID) -> bool:
         """Checks if this specific Google/Facebook account has a profile yet."""
-        result = self.table.select("customer_id", count=CountMethod.exact, head=True) \
-            .eq("social_id", social_id) \
+        result = self.table.select("cust_id", count=CountMethod.exact, head=True) \
+            .eq("cust_id", cust_id) \
             .execute()
         return self.validate_existence(result)

@@ -17,7 +17,7 @@ class SupplyChainService:
         social_id: UUID
         ):
 
-        if not self.cust_repo.is_social_user_registered(social_id):
+        if not self.cust_repo.is_user_registered(social_id):
             # If they don't exist, create them using your standard repository logic
             customer_to_create = CustomerCreate(**cust_info)
             return self.cust_repo.create(customer_to_create)
