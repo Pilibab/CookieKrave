@@ -58,7 +58,7 @@ class BaseRepository(Generic[T, C]):
     # It takes a Pydantic object, strips it down into a raw Dictionary (via model_dump), 
     # and pushes it into a new row in the database.
     def create(self, data: C):
-        clean_data = data.model_dump()
+        clean_data = data.model_dump(mode="json")
         result = self.table.insert(clean_data).execute().data
 
         return self.model_class(**cast(dict[str, Any], result[0]))
