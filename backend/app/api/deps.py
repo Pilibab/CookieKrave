@@ -9,7 +9,7 @@ security = HTTPBearer()
 # fetch the correct key to be decoded 
 # ! correct way to get the public api key from ES256
 jwks_client = PyJWKClient(
-    f"{configs.SUPABASE_URL.get_secret_value()}/auth/v1/keys"
+    f"{configs.SUPABASE_URL.get_secret_value()}/auth/v1/.well-known/jwks.json"
 )
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):  # was bearer_scheme
