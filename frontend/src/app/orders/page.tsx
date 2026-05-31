@@ -60,7 +60,7 @@ export default function OrdersPage() {
               onChange={e => setSearch(e.target.value)}
             />
           </div>
-          <Link href="/orders/new" className="btn btn-primary">+ New Order</Link>
+          <Link href="/orders/new" className="btn btn-primary" style={{ lineHeight: 1.4 }}>+ New Order</Link>
         </div>
       </div>
 
