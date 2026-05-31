@@ -1,16 +1,18 @@
 from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 from uuid import UUID
-
+from typing import Literal
 
 class OrderBase(BaseModel):
     """Shared fields: What the frontend sends to start an order."""
     cust_id: UUID
     total_amount: float = Field(ge=0)
-    ord_pay_meth: str = Field(min_length=1, max_length=64) # e.g., 'GCash', 'Cash'
-    ord_f_type: str = Field(min_length=1, max_length=64)   # e.g., 'Delivery', 'Pick_Up'
-
+    fulfillment_id: int
+    ord_fulfillment_time: datetime
+    ord_pay_meth: Literal["Cash", "GCash"] = "Cash"
+    order_status = Literal["Pending", "Preparing", "Out for Delivery", "Completed", "Cancelled"]
     model_config = ConfigDict(from_attributes=True)
+
 
 class OrderCreate(OrderBase):
     """
