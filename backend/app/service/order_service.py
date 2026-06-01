@@ -4,19 +4,26 @@ from uuid import UUID
 from app.repository.orders_repo import OrderRepository
 from app.repository.product_repo import ProductRepository
 from app.repository.cart_repo import CartRepository # Don't forget to import this!
-
+from app.repository.fullfillment_repo import FulfillmentRepository
+from app.model.fullfillement import FulfillmentCreate
 from app.model.order import OrderCreate
+from app.model.gcash import GCashPaymentCreate
+from app.repository.gcash_repo import GCashRepository
 
 class OrderService:
     def __init__(
-        self, 
-        order_repo: OrderRepository, 
-        prod_repo: ProductRepository, 
-        cart_repo: CartRepository
+        self,
+        order_repo: OrderRepository,
+        prod_repo: ProductRepository,
+        cart_repo: CartRepository,
+        fulfillment_repo: FulfillmentRepository,
+        gcash_repo: GCashRepository
     ):
         self.order_repo = order_repo
         self.prod_repo = prod_repo
-        self.cart_repo = cart_repo # Fixed: Now properly assigned
+        self.cart_repo = cart_repo
+        self.fulfillment_repo = fulfillment_repo
+        self.gcash_repo = gcash_repo
 
     # ? wont it be better to fetch also or ensure that the returned query 
     # ? contains cust_id that way we ensure that the grabbed query is made by the customer
@@ -68,22 +75,37 @@ class OrderService:
                 ord_f_type, 
                 prod_ids: list[int | str]}
         """
-        order_to_create = OrderCreate(
-            cust_id= order_details["cust_id"],
-            total_amount=order_details["total_amount"],
-            ord_pay_meth= order_details["ord_pay_meth"],
-            ord_f_type= order_details["ord_f_type"]
-        )
+        try:             
+            fulfillment = self.fulfillment_repo.create(
+                FulfillmentCreate(fulfillment_type=order_details["ord_f_type"])
+            )
 
-        ordered_prod =  order_details["prod_ids"]
+            order_to_create = OrderCreate(
+                cust_id= order_details["cust_id"],
+                total_amount=order_details["total_amount"],
+                ord_pay_meth= order_details["ord_pay_meth"],
+                ord_f_type= order_details["ord_f_type"],
+                fulfillment_id=fulfillment.fulfillment_id
+            )
 
-        try:
+
             # create order instance
             new_order = self.order_repo.create(order_to_create)
 
             # populate cart 
+            ordered_prod =  order_details["prod_ids"]
             self.cart_repo.create_order_line(order_id=new_order.ord_id, items=ordered_prod)
 
+            if order_details["ord_pay_meth"] == "GCash":
+                reference_no = order_details.get("reference_no")
+                if not reference_no:
+                    raise ValueError("GCash payment requires a reference number.")
+                data = GCashPaymentCreate(
+                    ord_id=new_order.ord_id,
+                    reference_no=reference_no,
+                    amount=order_details["total_amount"]
+                )
+                self.gcash_repo.create(data)
             return {
                 "status": "Success",
                 "order_id": new_order.ord_id,
