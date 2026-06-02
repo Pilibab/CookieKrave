@@ -37,6 +37,26 @@ class SupplyChainService:
                 # sends the negative value of the amount req for decrement hehehe
                 self.inventory_repo.adjust_stock(material_id, - total_needed)
 
+    def update_availability(self, prod_id: int) -> bool:
+        """
+        Checks the bill of materials for a product against current inventory stock.
+        Returns True if any required ingredient's quantity meets or exceeds available stock.
+        """
+        bom_list = self.bom_repo.get_stock(prod_id)
+
+        for ingredient in bom_list:
+            # 1. Get the current inventory item details using the ingredient's inv_id
+            # (Adjust 'get' to 'get_by_id' or whatever your inventory repo uses to fetch by primary key)
+            inventory_item = self.inventory_repo.get_by_id(ingredient.inv_id)
+            
+            if inventory_item:
+                # 2. Check if the required quantity is greater than or equal to the current stock
+                if ingredient.bom_quan_req >= inventory_item.inv_stock:
+                    # 3. Stop processing immediately and return True
+                    return True
+                    
+        # If all ingredients have enough stock, return False
+        return False
 
 
         

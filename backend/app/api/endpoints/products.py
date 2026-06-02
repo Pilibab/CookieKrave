@@ -7,10 +7,32 @@ from supabase import Client
 from app.model.products import Product, ProductCreate, ProductUpdate
 from app.repository.product_repo import ProductRepository
 from app.db.supabase_client import supabase
+from app.repository.bom_repo import BOMRepository
+from app.repository.inventory_repo import InventoryRepository
+from app.repository.cart_repo import CartRepository
+from app.service.supply_chain_service import SupplyChainService # Adjust import path if needed
 
 def get_supabase():
     """Returns the globally initialized supabase client."""
     return supabase
+
+def get_bom_repository(supabase: Client = Depends(get_supabase)) -> BOMRepository:
+    return BOMRepository(supabase)
+
+def get_inventory_repository(supabase: Client = Depends(get_supabase)) -> InventoryRepository:
+    return InventoryRepository(supabase)
+
+def get_cart_repository(supabase: Client = Depends(get_supabase)) -> CartRepository:
+    return CartRepository(supabase)
+
+def get_supply_chain_service(
+    bom_repo: BOMRepository = Depends(get_bom_repository),
+    inventory_repo: InventoryRepository = Depends(get_inventory_repository),
+    cart_repo: CartRepository = Depends(get_cart_repository)
+) -> SupplyChainService:
+    """Provides an instance of SupplyChainService with all required repos injected."""
+    return SupplyChainService(bom_repo, inventory_repo, cart_repo)
+
 
 def get_product_repository(supabase: Client = Depends(get_supabase)) -> ProductRepository:
     """Provides an instance of the CustomerRepository with the database connection injected."""
@@ -48,7 +70,8 @@ def create_product(
 def get_products(
     available_only: bool = False,
     search: Optional[str] = None,
-    repo: ProductRepository = Depends(get_product_repository)
+    repo: ProductRepository = Depends(get_product_repository),
+    supply_chain_service: SupplyChainService = Depends(get_supply_chain_service)
 ):
     """
     Retrieves products. Supports filtering by availability and fuzzy name search.
@@ -56,23 +79,35 @@ def get_products(
     - If `available_only` is true: Filters out unavailable products.
     - If no parameters: Returns all products.
     """
-    # Case A: Name Search takes priority
+    # Step 1: Fetch the products based on the query parameters
     if search:
         response = repo.search_product_by_name(search)
-        return [
-            Product.model_validate(row)
-            for row in response.data]
+        products = [Product.model_validate(row) for row in response.data]
         
-    # Case B: Filter by availability
-    if available_only:
+    elif available_only:
         response = repo.get_available_product()
-        return [
-            Product.model_validate(row)
-            for row in response.data
-            ]
+        products = [Product.model_validate(row) for row in response.data]
         
-    # Case C: Fallback to all products
-    return repo.get_all()
+    else:
+        raw_data = repo.get_all()
+        # Ensuring rows are Pydantic models even if get_all() returns raw dicts
+        products = [
+            Product.model_validate(row) if isinstance(row, dict) else row 
+            for row in raw_data
+        ]
+        
+    # Step 2: Run live inventory checks across your fetched products
+    for product in products:
+        is_short = supply_chain_service.update_availability(product.prod_id)
+        # If any ingredient is short (True), then availability is False
+        product.prod_available = not is_short
+        
+    # Step 3: Post-filter the list if the user specifically requested available_only.
+    # This weeds out items that just failed the live stock check despite what the DB said.
+    if available_only:
+        products = [p for p in products if p.prod_available]
+        
+    return products
 
 
 @router.get(
