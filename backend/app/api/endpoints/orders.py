@@ -12,7 +12,7 @@ from app.repository.product_repo import ProductRepository
 from app.repository.cart_repo import CartRepository
 from app.repository.fullfillment_repo import FulfillmentRepository
 from app.repository.gcash_repo import GCashRepository
-from app.service.order_service import OrderService
+from app.service.order_service import OrderService, FinalBillResponse
 from app.db.supabase_client import supabase
 
 class CreateOrderRequest(BaseModel):
@@ -143,10 +143,10 @@ def update_order(
         
     return updated_records[0]
 
-@router.get("/{order_id}/bill", summary="Get final bill for an order")
-def get_final_bill(order_id: int, cust_id: UUID, service: OrderService = Depends(get_order_service)):
+@router.get("/{order_id}/bill", summary="Get final bill for an order", response_model=FinalBillResponse)
+def get_final_bill(order_id: int, service: OrderService = Depends(get_order_service)) -> FinalBillResponse:
     try:
-        return service.get_final_bill(order_id, cust_id)
+        return service.get_final_bill(order_id)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     

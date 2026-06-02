@@ -10,6 +10,7 @@ from app.api.endpoints.inventory import router as inventory_router
 from app.api.endpoints.orders import router as orders_router
 from app.api.endpoints.products import router as product_router
 from app.api.endpoints.riders import router as riders_router
+from app.api.endpoints.report import router as report_router
 from app.api.auth import router as auth_router
 
 app = FastAPI(
@@ -46,6 +47,7 @@ app.include_router(inventory_router, prefix="/api")
 app.include_router(orders_router, prefix="/api")
 app.include_router(riders_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
+app.include_router(report_router, prefix="/api")
 
 
 @app.get("/")

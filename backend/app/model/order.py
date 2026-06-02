@@ -7,7 +7,7 @@ class OrderBase(BaseModel):
     cust_id: UUID
     total_amount: float = Field(ge=0)
     ord_pay_meth: Literal["Cash", "GCash"] = "Cash"
-    order_status: Literal["Pending", "Preparing", "Out for Delivery", "Completed", "Cancelled"] = "Pending"  # was missing = assignment
+    order_status: Literal["Pending", "Confirmed", "Baking", "Out for Delivery", "For Pickup", "Completed", "Cancelled"] = "Pending"  # was missing = assignment
 
 class OrderCreate(OrderBase):
     """Frontend sends this — no id, no fulfillment, no completion time."""

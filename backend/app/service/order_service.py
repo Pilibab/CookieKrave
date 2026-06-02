@@ -1,5 +1,5 @@
 from typing import Any, List, Dict
-from uuid import UUID
+# from uuid import UUID
 
 from app.repository.orders_repo import OrderRepository
 from app.repository.product_repo import ProductRepository
@@ -10,6 +10,25 @@ from app.model.order import OrderCreate
 from app.model.gcash import GCashPaymentCreate
 from app.repository.gcash_repo import GCashRepository
 
+from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import List
+
+class BillItemDetail(BaseModel):
+    product: str = Field(..., description="The name of the cookie product")
+    quantity: int = Field(..., description="The number of units ordered")
+    prod_price: float = Field(..., description="The unit price of the product")
+    subtotal: float = Field(..., description="The combined line total price (quantity * price)")
+
+class FinalBillResponse(BaseModel):
+    order_no: int = Field(..., description="The unique database tracking primary ID of the order")
+    date: datetime = Field(..., description="The timestamp when the order was created")
+    total: float = Field(..., description="The calculated absolute grand total amount of the invoice")
+    items: List[BillItemDetail] = Field(..., description="Collection of items itemized in the cart")
+
+    class Config:
+        # Allows Pydantic to read standard database attributes or ORM instances directly
+        from_attributes = True
 class OrderService:
     def __init__(
         self,
@@ -27,7 +46,7 @@ class OrderService:
 
     # ? wont it be better to fetch also or ensure that the returned query 
     # ? contains cust_id that way we ensure that the grabbed query is made by the customer
-    def get_final_bill(self, order_id: int, cust_id: UUID) -> Dict[str, Any]:
+    def get_final_bill(self, order_id: int) -> FinalBillResponse:
         # 1. Fetch data
         order = self.order_repo.get_by_id(order_id)
         
@@ -37,7 +56,7 @@ class OrderService:
 
         items = self.cart_repo.get_items_by_order(order_id)
         
-        bill_details: List[Dict[str, Any]] = []
+        bill_details: List[BillItemDetail] = []
         grand_total: float = 0.0
 
         # 2. Stitch the data together
@@ -51,19 +70,18 @@ class OrderService:
             line_total = float(item.cart_quan * product.prod_price)
             grand_total += line_total
             
-            bill_details.append({
-                "product": product.prod_name,
-                "quantity": item.cart_quan,
-                "prod_price": product.prod_price,
-                "subtotal": line_total
-            })
+            bill_details.append(BillItemDetail(                
+                product= product.prod_name,
+                quantity= item.cart_quan,
+                prod_price= product.prod_price,
+                subtotal= line_total))
 
-        return {
-            "order_no": order.ord_id,
-            "date": order.ord_time,
-            "total": grand_total,
-            "items": bill_details
-        }
+        return FinalBillResponse(
+            order_no=order.ord_id,
+            date=order.ord_time,
+            total=grand_total,
+            items=bill_details
+        )
 
     def create_order(self, order_details: Dict[str, Any]) -> Dict[str, Any]:
         """

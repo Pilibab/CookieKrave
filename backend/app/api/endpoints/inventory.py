@@ -6,7 +6,16 @@ from supabase import Client
 
 from app.model.inventory import Inventory, InventoryCreate
 from app.repository.inventory_repo import InventoryRepository
+from app.repository.bom_repo import BOMRepository
+from app.repository.cart_repo import CartRepository
+from app.service.supply_chain_service import SupplyChainService
 from app.db.supabase_client import supabase
+
+def get_bom_repository(): 
+    return BOMRepository(supabase)
+
+def get_cart_repository(): 
+    return CartRepository(supabase)
 
 def get_supabase():
     """Returns the globally initialized supabase client."""
@@ -16,6 +25,12 @@ def get_inventory_repository(supabase: Client = Depends(get_supabase)) -> Invent
     """Provides an instance of the InventoryRepository with the database connection injected."""
     return InventoryRepository(supabase)
 
+def get_supply_chain_service(
+    bom_repo: BOMRepository = Depends(get_bom_repository),
+    inventory_repo: InventoryRepository = Depends(get_inventory_repository),
+    cart_repo: CartRepository = Depends(get_cart_repository)
+) -> SupplyChainService:
+    return SupplyChainService(bom_repo, inventory_repo, cart_repo)
 # Define the router instead of importing app
 router = APIRouter(
     prefix="/inventory",
@@ -75,35 +90,16 @@ def get_inventory_by_id(
     return inventory
 
 
-@router.put(
-    "/{inv_id}", 
-    response_model=Inventory, 
-    summary="Update an existing inventory item"
+@router.post(
+    "/deduct-by-order/{order_id}",
+    summary="Deduct inventory based on an order's cart items"
 )
-def update_inventory(
-    inv_id: int, 
-    inventory_data: Inventory, 
-    repo: InventoryRepository = Depends(get_inventory_repository)
+def deduct_inventory_by_order(
+    order_id: int,
+    service: SupplyChainService = Depends(get_supply_chain_service)
 ):
-    """
-    Updates an entire inventory item profile.
-    """
-    if not repo.get_by_id(inv_id):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"Inventory item with ID {inv_id} does not exist."
-        )
-        
-    updated_records = repo.update(str(inv_id), inventory_data)
-    
-    if not updated_records:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-            detail="Failed to update inventory item record."
-        )
-        
-    return updated_records[0]
-
+    service.update_inventory(order_id)
+    return {"message": f"Inventory updated for order {order_id}."}
 
 @router.delete(
     "/{inv_id}", 
