@@ -31,7 +31,7 @@ class InventoryUpdate(BaseModel):
     Used for partial updates (e.g., restocking, changing reorder thresholds).
     Every single field is optional, while maintaining safety thresholds.
     """
-    inv_ing_name: Optional[str] = Field(default=None, min_length=5, max_length=64)
+    inv_ing_name: Optional[str] = Field(default=None, min_length=1, max_length=64)
     inv_stock: Optional[Decimal] = Field(default=None, ge=0.0, decimal_places=3) 
     inv_uom: Optional[UnitType] = None
     inv_rt: Optional[Decimal] = Field(default=None, ge=0.0, decimal_places=2) 

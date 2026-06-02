@@ -185,9 +185,8 @@ def update_inventory(
             detail=f"Inventory item with ID {inv_id} does not exist."
         )
         
-    
-    # Optional guard: prevent empty database hits
-    if not inventory_data:
+    # 2. FIXED: Guard clause correctly checks for an empty incoming payload
+    if not inventory_data.model_dump(exclude_unset=True):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No valid fields provided for update."
@@ -196,6 +195,7 @@ def update_inventory(
     # 3. Fire the update directly into the database repo
     updated_records = repo.update(inv_id, inventory_data)
     
+    # 4. Keep this safety check to handle unexpected database failures gracefully
     if not updated_records:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
