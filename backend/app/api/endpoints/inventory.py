@@ -66,7 +66,9 @@ def get_inventories(
     Retrieves all inventory items from the database.
     """
     # Case: Return all inventory items
-    return repo.get_all()
+    inv = repo.get_all()
+    inv_list: List[Inventory] = inv if inv else []
+    return inv_list
 
 
 @router.get(

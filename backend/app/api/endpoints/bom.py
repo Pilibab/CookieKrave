@@ -48,8 +48,8 @@ def get_all_bom(
     """
     Retrieves all Bill of Materials entries.
     """
-    return repo.get_all()
-
+    bom_entries = repo.get_all()
+    return bom_entries if bom_entries else []
 
 @router.get(
     "/{bom_id}", 
@@ -85,12 +85,12 @@ def get_stock_for_product(
     Retrieves all ingredients and quantities required to make a specific product.
     """
     stock = repo.get_stock(product_id)
-    if not stock:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"No ingredients found for product {product_id}."
-        )
-    return stock
+    # if not stock:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND, 
+    #         detail=f"No ingredients found for product {product_id}."
+    #     )
+    return stock if stock else []
 
 
 @router.get(
@@ -106,12 +106,12 @@ def get_products_using_ingredient(
     Finds all products that use a specific inventory item/ingredient.
     """
     products = repo.get_products_using_ingredient(inventory_id)
-    if not products:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"No products found using ingredient {inventory_id}."
-        )
-    return products
+    # if not products:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND, 
+    #         detail=f"No products found using ingredient {inventory_id}."
+    #     )
+    return products if products else []
 
 
 @router.put(

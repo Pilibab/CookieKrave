@@ -79,8 +79,10 @@ def get_all_fulfillments(
     """
     Retrieves all fulfillment records.
     """
-    return repo.get_all()
+    fulfillments = repo.get_all()
 
+    fulfillments_list: List[Fulfillment] = fulfillments if fulfillments else []
+    return fulfillments_list
 
 @fulfillment_router.get(
     "/{fulfillment_id}", 
@@ -185,7 +187,10 @@ def get_all_deliveries(
     """
     Retrieves all delivery records.
     """
-    return repo.get_all()
+    deliveries = repo.get_all()
+
+    deliveries_list: List[Delivery] = deliveries if deliveries else []
+    return deliveries_list
 
 
 @delivery_router.get(
@@ -222,12 +227,14 @@ def get_deliveries_by_rider(
     Retrieves all delivery tasks assigned to a specific rider.
     """
     deliveries = repo.get_deliveries_by_rider(rider_id)
-    if not deliveries:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"No deliveries found for rider {rider_id}."
-        )
-    return deliveries
+    # if not deliveries:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND, 
+    #         detail=f"No deliveries found for rider {rider_id}."
+    #     )
+
+    deliveries_list: List[Delivery] = deliveries if deliveries else []
+    return deliveries_list
 
 
 @delivery_router.put(
@@ -312,7 +319,9 @@ def get_all_pickups(
     """
     Retrieves all pick up records.
     """
-    return repo.get_all()
+    pickup = repo.get_all()
+    pickup_list: List[PickUp] = pickup if pickup else []
+    return pickup_list
 
 
 @pickup_router.get(

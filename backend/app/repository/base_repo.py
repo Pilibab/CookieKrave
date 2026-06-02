@@ -1,4 +1,4 @@
-from typing import Any, cast, Generic, TypeVar, Optional
+from typing import Any, cast, Generic, TypeVar, Optional, List
 from pydantic import BaseModel
 from supabase.client import Client
 from postgrest import APIResponse
@@ -25,9 +25,10 @@ class BaseRepository(Generic[T, C, U]):
         self.pk_field = pk_field
 
     # get all row for a specific table 
-    def get_all(self):
+    def get_all(self) -> List[T]:
         """retrieve the full table"""
-        return self.table.select("*").execute().data
+        raw_data = self.table.select("*").execute().data
+        return [self.model_class.model_validate(row) for row in raw_data]
 
     # It uses the Primary Key (the ID) to grab one specific record.
     def get_by_id(self, id: UUID | str | int ) -> Optional[T]:

@@ -48,9 +48,11 @@ def get_all_cart_items(
 ):
     """
     Retrieves all cart items from the database.
-    """
-    return repo.get_all()
+    """    
+    cart = repo.get_all()
 
+    cart_list: List[Cart] = cart if cart else []
+    return cart_list
 
 @router.get(
     "/order/{order_id}", 
@@ -65,12 +67,14 @@ def get_cart_items_by_order(
     Retrieves all cart items for a specific order.
     """
     items = repo.get_items_by_order(order_id)
-    if not items:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"No cart items found for order {order_id}."
-        )
-    return items
+    # if not items:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND, 
+    #         detail=f"No cart items found for order {order_id}."
+    #     )
+    items_list: List[Cart] = items if items else []
+
+    return items_list
 
 
 @router.delete(
@@ -117,4 +121,6 @@ def create_order_line_items(
     repo.create_order_line(order_id, items)
 
     # Return the created items
-    return repo.get_items_by_order(order_id)
+    cart = repo.get_items_by_order(order_id)
+    cart_list: List[Cart] = cart if cart else []
+    return cart_list

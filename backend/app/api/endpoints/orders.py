@@ -106,12 +106,15 @@ def get_orders_by_customer(
     Retrieves all orders made by a specific customer.
     """
     orders = repo.get_orders_by_customer(customer_id)
-    if not orders:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"No orders found for customer {customer_id}."
-        )
-    return orders
+    # if not orders:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_404_NOT_FOUND, 
+    #         detail=f"No orders found for customer {customer_id}."
+    #     )
+        
+    orders_list: List[Order] = orders if orders else []
+        
+    return orders_list
 
 
 @router.put(
