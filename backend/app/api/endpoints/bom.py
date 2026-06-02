@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from supabase import Client
 
-from app.model.bom import Bom, BomCreate, BomUpdate
+from app.model.bom import Bom, BomBulkCreate, BomUpdate
 from app.repository.bom_repo import BOMRepository
 from app.db.supabase_client import supabase
 
@@ -23,19 +23,32 @@ router = APIRouter(
 
 @router.post(
     "", 
-    response_model=Bom, 
+    response_model=List[Bom], # Returns a list of the newly registered database records
     status_code=status.HTTP_201_CREATED,
-    summary="Create a new BOM entry"
+    summary="Bulk create BOM entries for a product"
 )
-def create_bom(
-    bom_in: BomCreate, 
+
+def create_bom_bulk(
+    bom_in: BomBulkCreate, 
     repo: BOMRepository = Depends(get_bom_repository)
 ):
     """
-    Creates a new Bill of Materials entry linking a product to an ingredient.
+    Accepts a single product ID accompanied by an array of ingredient definitions, 
+    executing a single bulk insertion operation into the database.
     """
-    return repo.create(bom_in)
+    if not bom_in.ingredients:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Ingredients collection cannot be empty."
+        )
 
+    try:
+        return repo.create_bulk(bom_in)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to execute bulk BOM creation: {str(e)}"
+        )
 
 @router.get(
     "", 
