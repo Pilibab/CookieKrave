@@ -6,7 +6,7 @@ from uuid import UUID
 from pydantic import BaseModel
 from decimal import Decimal
 
-from app.model.order import Order
+from app.model.order import Order, OrderUpdate
 from app.repository.orders_repo import OrderRepository
 from app.repository.product_repo import ProductRepository
 from app.repository.cart_repo import CartRepository
@@ -121,7 +121,7 @@ def get_orders_by_customer(
 )
 def update_order(
     order_id: int, 
-    order_data: Order, 
+    order_data: OrderUpdate, 
     repo: OrderRepository = Depends(get_order_repository)
 ):
     """
@@ -133,7 +133,7 @@ def update_order(
             detail=f"Order with ID {order_id} does not exist."
         )
         
-    updated_records = repo.update(str(order_id), order_data)
+    updated_records = repo.update(order_id, order_data)
     
     if not updated_records:
         raise HTTPException(
@@ -154,5 +154,5 @@ def get_final_bill(order_id: int, service: OrderService = Depends(get_order_serv
 def delete_order(order_id: int, service: OrderService = Depends(get_order_service)):
     if not service.order_repo.get_by_id(order_id):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Order {order_id} not found.")
-    service.order_repo.delete(str(order_id))
+    service.order_repo.delete(order_id)
     return {"message": f"Order {order_id} deleted."}

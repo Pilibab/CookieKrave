@@ -8,9 +8,10 @@ from uuid import UUID
 # doesnt have model_dump method 
 T = TypeVar("T", bound=BaseModel)       # read model
 C = TypeVar("C", bound=BaseModel)       # create model 
+U = TypeVar("U", bound=BaseModel)       # update model 
 
 
-class BaseRepository(Generic[T, C]):
+class BaseRepository(Generic[T, C, U]):
     # maybe pass the table itself to shorten this instanciation 
     def __init__(
             self, 
@@ -29,7 +30,7 @@ class BaseRepository(Generic[T, C]):
         return self.table.select("*").execute().data
 
     # It uses the Primary Key (the ID) to grab one specific record.
-    def get_by_id(self, id: UUID | int) -> Optional[T]:
+    def get_by_id(self, id: UUID | str | int ) -> Optional[T]:
         """get an instance from a table (that is not an associative entity), using only one id"""
         data = self.table.select("*").eq(self.pk_field , id).execute().data
 
@@ -65,13 +66,13 @@ class BaseRepository(Generic[T, C]):
 
     # It finds an existing row and swaps out the old values 
     # for new ones provided in your Model.
-    def update(self, id: str, data: T):
+    def update(self, id: UUID | str | int, data: U):
         clean_data = data.model_dump()
         return self.table.update(clean_data).eq(self.pk_field , id).execute().data
 
     # It instructs the database to permanently erase a 
     # specific row based on its ID.
-    def delete(self, id: str):
+    def delete(self, id: UUID | str | int):
         return self.table.delete().eq(self.pk_field , id).execute().data
     
     #existence checker

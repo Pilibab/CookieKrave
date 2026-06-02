@@ -4,7 +4,7 @@ from supabase import  Client
 from typing import List
 from uuid import UUID
 
-from app.model.customer import Customer, CustomerCreate
+from app.model.customer import Customer, CustomerCreate, CustomerUpdate
 from app.repository.customer_repo import CustomerRepository
 from app.db.supabase_client import supabase
 from app.api.deps import require_admin, get_current_user
@@ -79,12 +79,12 @@ def get_customer_by_id(
 )
 def update_customer(
     customer_id: UUID, 
-    customer_data: Customer, 
+    customer_data: CustomerUpdate, 
     repo: CustomerRepository = Depends(get_customer_repository)
 ):
     if not repo.get_by_id(customer_id):
         raise HTTPException(status_code=404, detail="Customer does not exist.")
-    updated_records = repo.update(str(customer_id), customer_data)
+    updated_records = repo.update(customer_id, customer_data)
     return updated_records[0]
 
 
@@ -99,5 +99,5 @@ def delete_customer(
 ):
     if not repo.get_by_id(customer_id):
         raise HTTPException(status_code=404, detail="Customer not found.")
-    repo.delete(str(customer_id))
+    repo.delete(customer_id)
     return {"message": f"Customer {customer_id} has been permanently deleted."}

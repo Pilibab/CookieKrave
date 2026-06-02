@@ -1,9 +1,9 @@
 # app/repository/gcash_repo.py
 from supabase import Client
 from app.repository.base_repo import BaseRepository
-from app.model.gcash import GCashPayment, GCashPaymentCreate
+from app.model.gcash import GCashPayment, GCashPaymentCreate, GCashPaymentUpdate
 
-class GCashRepository(BaseRepository[GCashPayment, GCashPaymentCreate]):
+class GCashRepository(BaseRepository[GCashPayment, GCashPaymentCreate, GCashPaymentUpdate]):
     def __init__(self, supabase: Client):
         super().__init__(supabase, "gcash_payments", GCashPayment, "ord_id")
 

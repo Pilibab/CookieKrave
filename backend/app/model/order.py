@@ -22,3 +22,24 @@ class Order(OrderBase):
     ord_fulfillment_time: Optional[datetime] = None  # only set on completion
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class OrderUpdate(BaseModel):
+    """
+    Used when patching an order from the frontend.
+    Allows changing status, updating totals, or switching payment methods.
+    """
+    # UUIDs are sent as strings or UUID objects from the frontend
+    cust_id: Optional[UUID] = None
+    
+    # Keeps your financial integrity constraint intact
+    total_amount: Optional[float] = Field(default=None, ge=0)
+    
+    # Enforces exact choices so the database doesn't crash on a typo
+    ord_pay_meth: Optional[Literal["Cash", "GCash"]] = None
+    order_status: Optional[Literal[
+        "Pending", "Confirmed", "Baking", 
+        "Out for Delivery", "For Pickup", "Completed", "Cancelled"
+    ]] = None
+
+    model_config = ConfigDict(from_attributes=True)

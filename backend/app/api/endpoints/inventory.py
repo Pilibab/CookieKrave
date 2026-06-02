@@ -4,7 +4,7 @@ from typing import List
 from supabase import Client
 
 
-from app.model.inventory import Inventory, InventoryCreate
+from app.model.inventory import Inventory, InventoryCreate, InventoryUpdate
 from app.repository.inventory_repo import InventoryRepository
 from app.repository.bom_repo import BOMRepository
 from app.repository.cart_repo import CartRepository
@@ -118,7 +118,7 @@ def delete_inventory(
             detail=f"Inventory item with ID {inv_id} not found."
         )
         
-    repo.delete(str(inv_id))
+    repo.delete(inv_id)
     return {"message": f"Inventory item {inv_id} has been permanently deleted."}
 
 
@@ -160,3 +160,44 @@ def adjust_inventory_stock(
         )
     
     return updated_inventory
+
+
+@router.put(
+    "/{inv_id}", 
+    response_model=Inventory, 
+    summary="Manually update an existing inventory item"
+)
+def update_inventory(
+    inv_id: int, 
+    inventory_data: InventoryUpdate,  # Validates the incoming partial JSON payload
+    repo: InventoryRepository = Depends(get_inventory_repository)
+):
+    """
+    Manually updates an inventory item's properties (name, stock, uom, reorder threshold).
+    - Fields not specified in the payload remain untouched.
+    """
+    # 1. Check if the target inventory record even exists
+    if not repo.get_by_id(inv_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"Inventory item with ID {inv_id} does not exist."
+        )
+        
+    
+    # Optional guard: prevent empty database hits
+    if not inventory_data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No valid fields provided for update."
+        )
+        
+    # 3. Fire the update directly into the database repo
+    updated_records = repo.update(inv_id, inventory_data)
+    
+    if not updated_records:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Failed to update inventory record."
+        )
+        
+    return updated_records[0]

@@ -2,10 +2,10 @@ from typing import List
 
 from app.repository.base_repo import BaseRepository
 from supabase.client import Client
-from app.model.cart import Cart, CartCreate
+from app.model.cart import Cart, CartCreate, CartUpdate
 from postgrest.types import CountMethod # <-- Import the Enum class here
 
-class CartRepository(BaseRepository[Cart, CartCreate]):
+class CartRepository(BaseRepository[Cart, CartCreate, CartUpdate]):
 
     def __init__(self, supabase: Client):
         # Pass the actual table name and the model class to the parent

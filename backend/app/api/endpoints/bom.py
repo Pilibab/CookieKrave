@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from supabase import Client
 
-from app.model.bom import Bom, BomCreate
+from app.model.bom import Bom, BomCreate, BomUpdate
 from app.repository.bom_repo import BOMRepository
 from app.db.supabase_client import supabase
 
@@ -121,7 +121,7 @@ def get_products_using_ingredient(
 )
 def update_bom(
     bom_id: int, 
-    bom_data: Bom, 
+    bom_data: BomUpdate, 
     repo: BOMRepository = Depends(get_bom_repository)
 ):
     """

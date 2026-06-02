@@ -21,3 +21,6 @@ class Cart(CartBase):
 class CartCreate(CartBase):
     """Used when receiving data from the Frontend (ID isn't created yet)"""
     pass
+
+class CartUpdate(BaseModel):
+    cart_quan: int = 1

@@ -1,22 +1,39 @@
 from pydantic import BaseModel, ConfigDict, Field
+from typing import Optional
 
 class RiderBase(BaseModel):
     """
-        used for reading data from the data base
+    Base data fields shared across reading, creating, and updating riders.
+    Matches your character varying length constraints exactly.
     """
-    rider_id: int 
+    rider_name: str = Field(min_length=5, max_length=100)
+    rider_contact_num: str = Field(min_length=5, max_length=20) 
 
-    # allows pydantic to work with sql, pydantic expects a dict but sql returns an object 
-    # setting it to true says that if bracket notation dict["key"] does not work try obj.method
     model_config = ConfigDict(from_attributes=True)
 
+
+class RiderCreate(RiderBase):
+    """
+    Used when registering a rider.
+    The rider_id is a string fetched directly from your 3rd-party delivery provider.
+    """
+    rider_id: str = Field(min_length=1, max_length=64)
+
+
+class RiderUpdate(BaseModel):
+    """
+    Used for partial profile updates.
+    (Note: rider_id is omitted here because you won't change an external system's ID).
+    """
+    rider_name: Optional[str] = Field(default=None, min_length=5, max_length=100)
+    rider_contact_num: Optional[str] = Field(default=None, min_length=5, max_length=20)
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class Rider(RiderBase): 
-    rider_name: str = Field(min_length=5, max_length=100)
-    rider_contact_num: str = Field(min_length=5, max_length=20)                                                # set the float to 7 width 2 decimal place
-
-
-class RiderCreate(BaseModel):
     """
-        Used when receiving data from the Frontend (ID isn't created yet) 
+    Used for returning data back from Supabase/PostgreSQL.
+    Includes the string-based primary key ID.
     """
-    pass
+    rider_id: str

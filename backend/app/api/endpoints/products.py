@@ -4,7 +4,7 @@ from typing import List, Optional
 from supabase import Client
 
 
-from app.model.products import Product, ProductCreate
+from app.model.products import Product, ProductCreate, ProductUpdate
 from app.repository.product_repo import ProductRepository
 from app.db.supabase_client import supabase
 
@@ -22,12 +22,6 @@ router = APIRouter(
     tags=["products"]
 )
 
-@router.post(
-    "", 
-    response_model=Product, 
-    status_code=status.HTTP_201_CREATED,
-    summary="Create a new customer"
-)
 
 @router.post(
     "", 
@@ -109,7 +103,7 @@ def get_product_by_id(
 )
 def update_product(
     product_id: int, 
-    product_data: Product, 
+    product_data: ProductUpdate, 
     repo: ProductRepository = Depends(get_product_repository)
 ):
     """
@@ -121,7 +115,7 @@ def update_product(
             detail=f"Product with ID {product_id} does not exist."
         )
         
-    updated_records = repo.update(str(product_id), product_data)
+    updated_records = repo.update(product_id, product_data)
     
     if not updated_records:
         raise HTTPException(
@@ -149,5 +143,5 @@ def delete_product(
             detail=f"Product with ID {product_id} not found."
         )
         
-    repo.delete(str(product_id))
+    repo.delete(product_id)
     return {"message": f"Product {product_id} has been permanently deleted."}

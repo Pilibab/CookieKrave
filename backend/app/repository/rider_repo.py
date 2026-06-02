@@ -1,8 +1,8 @@
 from app.repository.base_repo import BaseRepository
 from supabase.client import Client
-from app.model.rider import Rider, RiderCreate
+from app.model.rider import Rider, RiderCreate, RiderUpdate
 
-class RiderRepository(BaseRepository[Rider, RiderCreate]):
+class RiderRepository(BaseRepository[Rider, RiderCreate, RiderUpdate]):
     def __init__(self, supabase: Client):
         super().__init__(supabase, "rider", Rider, "rider_id")
 

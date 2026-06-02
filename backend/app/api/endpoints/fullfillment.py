@@ -5,9 +5,9 @@ from supabase import Client
 
 
 from app.model.fullfillement import (
-    Fulfillment, FulfillmentCreate,
-    Delivery, DeliveryCreate,
-    PickUp, PickUpCreate
+    Fulfillment, FulfillmentCreate, FulfillmentUpdate,
+    Delivery, DeliveryCreate, DeliveryUpdate,
+    PickUp, PickUpCreate, PickUpUpdate
 )
 from app.repository.fullfillment_repo import (
     FulfillmentRepository,
@@ -110,7 +110,7 @@ def get_fulfillment_by_id(
 )
 def update_fulfillment(
     fulfillment_id: int, 
-    fulfillment_data: Fulfillment, 
+    fulfillment_data: FulfillmentUpdate, 
     repo: FulfillmentRepository = Depends(get_fulfillment_repository)
 ):
     """
@@ -122,7 +122,7 @@ def update_fulfillment(
             detail=f"Fulfillment with ID {fulfillment_id} does not exist."
         )
         
-    updated_records = repo.update(str(fulfillment_id), fulfillment_data)
+    updated_records = repo.update(fulfillment_id, fulfillment_data)
     
     if not updated_records:
         raise HTTPException(
@@ -150,7 +150,7 @@ def delete_fulfillment(
             detail=f"Fulfillment with ID {fulfillment_id} not found."
         )
         
-    repo.delete(str(fulfillment_id))
+    repo.delete(fulfillment_id)
     return {"message": f"Fulfillment {fulfillment_id} has been permanently deleted."}
 
 
@@ -237,7 +237,7 @@ def get_deliveries_by_rider(
 )
 def update_delivery(
     fulfillment_id: int, 
-    delivery_data: Delivery, 
+    delivery_data: DeliveryUpdate, 
     repo: DeliveryRepository = Depends(get_delivery_repository)
 ):
     """
@@ -249,7 +249,7 @@ def update_delivery(
             detail=f"Delivery with fulfillment ID {fulfillment_id} does not exist."
         )
         
-    updated_records = repo.update(str(fulfillment_id), delivery_data)
+    updated_records = repo.update(fulfillment_id, delivery_data)
     
     if not updated_records:
         raise HTTPException(
@@ -277,7 +277,7 @@ def delete_delivery(
             detail=f"Delivery with fulfillment ID {fulfillment_id} not found."
         )
         
-    repo.delete(str(fulfillment_id))
+    repo.delete(fulfillment_id)
     return {"message": f"Delivery {fulfillment_id} has been permanently deleted."}
 
 
@@ -343,7 +343,7 @@ def get_pickup_by_id(
 )
 def update_pickup(
     fulfillment_id: int, 
-    pickup_data: PickUp, 
+    pickup_data: PickUpUpdate, 
     repo: PickUpRepository = Depends(get_pickup_repository)
 ):
     """
@@ -355,7 +355,7 @@ def update_pickup(
             detail=f"Pick up with fulfillment ID {fulfillment_id} does not exist."
         )
         
-    updated_records = repo.update(str(fulfillment_id), pickup_data)
+    updated_records = repo.update(fulfillment_id, pickup_data)
     
     if not updated_records:
         raise HTTPException(
@@ -383,9 +383,12 @@ def delete_pickup(
             detail=f"Pick up with fulfillment ID {fulfillment_id} not found."
         )
         
-    repo.delete(str(fulfillment_id))
+    repo.delete(fulfillment_id)
     return {"message": f"Pick up {fulfillment_id} has been permanently deleted."}
 
 
 # Export all routers
 router = [fulfillment_router, delivery_router, pickup_router]
+
+
+# ! todo allow change in method
