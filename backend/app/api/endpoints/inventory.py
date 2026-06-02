@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from supabase import Client
-
+from decimal import Decimal
 
 from app.model.inventory import Inventory, InventoryCreate, InventoryUpdate
 from app.repository.inventory_repo import InventoryRepository
@@ -131,7 +131,7 @@ def delete_inventory(
 )
 def adjust_inventory_stock(
     inv_id: int,
-    amount: float,
+    amount: Decimal,
     repo: InventoryRepository = Depends(get_inventory_repository)
 ):
     """

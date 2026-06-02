@@ -2,6 +2,7 @@
 from app.repository.bom_repo import BOMRepository
 from app.repository.inventory_repo import InventoryRepository
 from app.repository.cart_repo import CartRepository 
+from decimal import Decimal
 
 # from app.model.order import OrderCreate
 
@@ -30,12 +31,12 @@ class SupplyChainService:
 
             for ingredient in recipe:
                 # Get the raw material info from Inventory
-                total_needed : float = ingredient.bom_quan_req * item.cart_quan
+                total_needed : Decimal = ingredient.bom_quan_req * item.cart_quan
                 material_id : int = ingredient.inv_id
 
                 # Logic to subtract stock 
                 # sends the negative value of the amount req for decrement hehehe
-                self.inventory_repo.adjust_stock(material_id, - total_needed)
+                self.inventory_repo.adjust_stock(material_id, -total_needed)
 
     def update_availability(self, prod_id: int) -> bool:
         """
@@ -51,7 +52,7 @@ class SupplyChainService:
             
             if inventory_item:
                 # 2. Check if the required quantity is greater than or equal to the current stock
-                if ingredient.bom_quan_req >= inventory_item.inv_stock:
+                if ingredient.bom_quan_req > inventory_item.inv_stock:
                     # 3. Stop processing immediately and return True
                     return True
                     
