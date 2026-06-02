@@ -1,23 +1,43 @@
+from datetime import date
+from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 class ProductBase(BaseModel):
     """
-        used for reading data from the data base
+    Base fields shared for reading and creating products.
+    Matches the exact constraints of the public.products database columns.
     """
     prod_name: str = Field(min_length=5, max_length=64)
     prod_desc: str = Field(min_length=5, max_length=255)
-    prod_price: float                                                # set the float to 7 width 2 decimal place
+    
+    # ge=0 enforces the CHECK constraint (prod_price >= 0)
+    prod_price: float = Field(ge=0.0) 
     prod_available: bool = True
-    # allows pydantic to work with sql, pydantic expects a dict but sql returns an object 
-    # setting it to true says that if bracket notation dict["key"] does not work try obj.method
+    
+    # ADDED: Aligns with 'prod_sl date not null'
+    prod_sl: date 
+    
+    # ADDED: Aligns with 'prod_image_url character varying(512)' and its fallback default
+    prod_image_url: Optional[str] = Field(
+        default="https://ghhowjijwfgffcbjlsxl.supabase.co/storage/v1/object/public/product_img/default_no_img.png",
+        max_length=512
+    )
+
+    # Configures Pydantic to cleanly convert SQLAlchemy/SQL objects into dictionaries/JSON
     model_config = ConfigDict(from_attributes=True)
 
-class Product(ProductBase): 
-    prod_id: int 
 
-
-class ProductCreate(BaseModel):
+class ProductCreate(ProductBase):
     """
-        Used when receiving data from the Frontend (ID isn't created yet) 
+    Used when receiving data from the Frontend to create a new record.
+    Inherits all base fields. The database generates the 'prod_id' automatically.
     """
     pass
+
+
+class Product(ProductBase): 
+    """
+    Used for reading data from the database. 
+    Includes the auto-generated database primary key ID.
+    """
+    prod_id: int
