@@ -25,3 +25,13 @@ class StaffCreate(BaseModel):
     role: Optional[str] = Field(default='admin', pattern="^(admin|manager|baker)$")
 
     model_config = ConfigDict(from_attributes=True)
+
+class StaffUpdate(BaseModel):
+    """
+    Used when modifying an existing staff profile.
+    All fields are completely optional so the frontend can send partial updates (PATCH style).
+    """
+    staff_name: Optional[str] = Field(None, min_length=1, max_length=64)
+    role: Optional[str] = Field(None, pattern="^(admin|manager|baker)$")
+
+    model_config = ConfigDict(from_attributes=True)

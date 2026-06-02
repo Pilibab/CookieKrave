@@ -1,9 +1,9 @@
 from supabase.client import Client
-from app.model.staff import Staff, StaffCreate
+from app.model.staff import Staff, StaffCreate, StaffUpdate
 from app.repository.base_repo import BaseRepository
 
 
-class StaffRepository(BaseRepository[Staff, StaffCreate]):
+class StaffRepository(BaseRepository[Staff, StaffCreate, StaffUpdate]):
     def __init__(self, supabase: Client):
         super().__init__(
             supabase=supabase,
