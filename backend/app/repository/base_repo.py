@@ -68,7 +68,7 @@ class BaseRepository(Generic[T, C, U]):
     # It finds an existing row and swaps out the old values 
     # for new ones provided in your Model.
     def update(self, id: UUID | str | int, data: U):
-        clean_data = data.model_dump()
+        clean_data = data.model_dump(exclude_none=True)
         return self.table.update(clean_data).eq(self.pk_field , id).execute().data
 
     # It instructs the database to permanently erase a 
