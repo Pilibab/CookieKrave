@@ -10,6 +10,7 @@ from app.model.order import OrderCreate
 from app.model.gcash import GCashPaymentCreate
 from app.repository.gcash_repo import GCashRepository
 
+from collections import Counter
 from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import List
@@ -84,35 +85,25 @@ class OrderService:
         )
 
     def create_order(self, order_details: Dict[str, Any]) -> Dict[str, Any]:
-        """
-            creates order instance and populate cart table 
-            args: { 
-                cust_id,
-                total_amount,
-                ord_pay_meth, 
-                ord_f_type, 
-                prod_ids: list[int | str]}
-        """
         try:             
             fulfillment = self.fulfillment_repo.create(
                 FulfillmentCreate(fulfillment_type=order_details["ord_f_type"])
             )
 
             order_to_create = OrderCreate(
-                cust_id= order_details["cust_id"],
+                cust_id=order_details["cust_id"],
                 total_amount=order_details["total_amount"],
-                ord_pay_meth= order_details["ord_pay_meth"],
-                ord_f_type= order_details["ord_f_type"],
+                payment_method=order_details["ord_pay_meth"],
                 fulfillment_id=fulfillment.fulfillment_id
             )
 
-
-            # create order instance
             new_order = self.order_repo.create(order_to_create)
 
-            # populate cart 
-            ordered_prod =  order_details["prod_ids"]
-            self.cart_repo.create_order_line(order_id=new_order.ord_id, items=ordered_prod)
+            # populate cart
+            ordered_prod = order_details["prod_ids"]
+            prod_counts : Counter[int]  = Counter(ordered_prod)  # ← was commented out by mistake
+            cart_items : list[dict[str, int]]  = [{"prod_id": pid, "cart_quan": qty} for pid, qty in prod_counts.items()]
+            self.cart_repo.create_order_line(order_id=new_order.ord_id, items=cart_items)
 
             if order_details["ord_pay_meth"] == "GCash":
                 reference_no = order_details.get("reference_no")
@@ -124,6 +115,7 @@ class OrderService:
                     amount=order_details["total_amount"]
                 )
                 self.gcash_repo.create(data)
+
             return {
                 "status": "Success",
                 "order_id": new_order.ord_id,
