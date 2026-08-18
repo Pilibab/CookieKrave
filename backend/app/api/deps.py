@@ -29,7 +29,7 @@ def get_current_user(
     # Step B: If missing, fallback to extracted browser tracking cookies (Dashboard components view context)
     if not token:
         token = request.cookies.get("sb-access-token")
-        print(token)
+
     # Step C: If both routes turn up completely blank, fail loudly
     if not token:
         raise HTTPException(
@@ -46,7 +46,6 @@ def get_current_user(
             algorithms=["HS256", "ES256"],
             options={"verify_aud": False}
         )
-        print(payload)
         return payload
         
     except jwt.ExpiredSignatureError:
